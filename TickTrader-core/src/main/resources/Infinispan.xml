@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:5.3 http://www.infinispan.org/schemas/infinispan-config-5.3.xsd"
+        xmlns="urn:infinispan:config:5.3">
+    <global>
+        <!--<transport transportClass="org.infinispan.remoting.transport.jgroups.JGroupsTransport"-->
+                   <!--clusterName="infinispan-cluster"-->
+                   <!--nodeName="Node01"-->
+                   <!--distributedSyncTimeout="50000">-->
+            <!--<properties>-->
+            <!--<property name="configurationFile" value="udp.xml"/>-->
+            <!--</properties>-->
+        <!--</transport>-->
+        <!--<globalJmxStatistics enabled="false" allowDuplicateDomains="true"/>-->
+
+        <transport clusterName="ChartService"/>
+        <globalJmxStatistics enabled="true"/>
+    </global>
+
+    <namedCache name="IndicatorCache">
+        <eviction
+            maxEntries="500"
+            strategy="LRU"/>
+    </namedCache>
+
+    <namedCache name="EventQtCache">
+        <clustering mode="distribution">
+            <l1 enabled="false" lifespan="60000"/>
+            <hash numOwners="2" />
+            <async/>
+        </clustering>
+    </namedCache>
+
+    <namedCache name="EventIdcCache">
+        <clustering mode="distribution">
+            <l1 enabled="false" lifespan="60000"/>
+            <hash numOwners="2" />
+            <async/>
+        </clustering>
+    </namedCache>
+</infinispan>

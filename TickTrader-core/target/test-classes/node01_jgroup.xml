@@ -1,0 +1,47 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../main/config/ehcache.xsd">
+    <diskStore path="java.io.tmpdir/one"/>
+
+	<cacheManagerPeerProviderFactory
+        class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+        properties="file=udp.xml" />
+
+		<defaultCache
+            maxElementsInMemory="10"
+            eternal="false"
+            timeToIdleSeconds="100"
+            timeToLiveSeconds="100"
+            overflowToDisk="true">
+
+		<cacheEventListenerFactory
+		    class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+		        properties="replicateAsynchronously=true, replicatePuts=true,
+			replicateUpdates=true, replicateUpdatesViaCopy=false,
+			replicateRemovals=true" />
+    </defaultCache>
+
+	<cache name="sampleCache1"
+		   maxElementsInMemory="100000"
+		   maxElementsOnDisk="0"
+		   eternal="true"
+		   copyOnWrite="false">
+		<!--
+		<cacheEventListenerFactory class="net.sf.ehcache.event.TerracottaCacheEventReplicationFactory"/>
+        <terracotta clustered="false" valueMode="serialization"/>
+		
+		<terracotta/>
+		-->
+		
+		<cacheEventListenerFactory
+            class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+            properties="replicateAsynchronously=true, replicatePuts=true,
+            replicateUpdates=true, replicateUpdatesViaCopy=false,
+            replicateRemovals=true" />
+		
+		
+        <bootstrapCacheLoaderFactory
+            class="net.sf.ehcache.distribution.jgroups.JGroupsBootstrapCacheLoaderFactory"
+            properties="bootstrapAsynchronously=false" />
+			
+	</cache>
+	<!--<terracottaConfig url="localhost:9510"/>-->
+</ehcache>
