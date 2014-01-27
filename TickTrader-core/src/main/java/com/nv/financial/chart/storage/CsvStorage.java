@@ -20,28 +20,37 @@ import static com.nv.financial.chart.util.Utils.FILE_DELIMITER;
  * Time: 下午 2:52
  *
  * For test.
- * Output quote to csv file split by TimePeriod.
+ * Output quote to csv qtFile split by TimePeriod.
  */
 public class CsvStorage implements IStorage{
     private static final Logger logger = LogManager.getLogger(CsvStorage.class);
-    private File file;
+    private File qtFile;
+    private File tickFile;
 
     public CsvStorage(String provider, String product, TimePeriod period){
         String strPath = "Quote" + File.separator + period.name() + File.separator +
                 provider + FILE_DELIMITER + product + FILE_DELIMITER + period.name() + ".csv";
-        file = new File(strPath);
+        qtFile = new File(strPath);
+        strPath = "Tick" + File.separator + product + ".csv";
+        tickFile = new File(strPath);
     }
 
 
     @Override
     public void save(Tick tick) {
+        try {
+            FileUtils.writeStringToFile(tickFile, tick.toString(), true);
+            FileUtils.writeStringToFile(tickFile, "\n", true);
+        } catch (IOException e) {
+            logger.error("", e);
+        }
     }
 
     @Override
     public void save(Quote quote) {
         try {
-            FileUtils.writeStringToFile(file, quote.toString(), true);
-            FileUtils.writeStringToFile(file, "\n", true);
+            FileUtils.writeStringToFile(qtFile, quote.toString(), true);
+            FileUtils.writeStringToFile(qtFile, "\n", true);
         } catch (IOException e) {
             logger.error("", e);
         }
@@ -77,9 +86,9 @@ public class CsvStorage implements IStorage{
 //        Scanner scan;
 //        String line;
 //        try {
-//            if(!file.exists())
+//            if(!qtFile.exists())
 //                return ret;
-//            scan = new Scanner(file);
+//            scan = new Scanner(qtFile);
 //            int idx = 0;
 //            while (scan.hasNext()) {
 //                line = scan.next();

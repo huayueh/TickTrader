@@ -52,6 +52,7 @@ public class MemQuoteQuoteProvider extends AbstractQuoteProvider implements IMem
 
     @Override
     public void setQuotes(Tick tick) {
+        storage.save(tick);
         if (tick.equals(preTickRef.get())){
             return;
         }
@@ -108,9 +109,6 @@ public class MemQuoteQuoteProvider extends AbstractQuoteProvider implements IMem
             nQt.setNew(true);
             his.put(nQt.getTime(), nQt);
             toStorage(qt);
-//            if(this.contract.equals("IB") && this.product.equals("AUDJPY") && this.period.equals(TimePeriod.TEN_SEC)){
-//                System.out.println("----------------------------");
-//            }
             logger.debug("create new bar:(" + nQt + ")" + period.name());
         } else {//cur < curBarStart
             //late tick, maybe cause by network

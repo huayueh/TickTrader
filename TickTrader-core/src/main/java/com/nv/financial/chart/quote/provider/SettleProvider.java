@@ -1,6 +1,5 @@
 package com.nv.financial.chart.quote.provider;
 
-import com.nv.financial.chart.dto.Quote;
 import com.nv.financial.chart.dto.Settle;
 import com.nv.financial.chart.util.Utils;
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +56,7 @@ public class SettleProvider {
     }
 
     /**
-     * 差一點避免拉高壓低結算
+     * 差一天避免拉高壓低結算
      * */
     public String currentContract(long time){
         long key = his.ceilingKey(time);
