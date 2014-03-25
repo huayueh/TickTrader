@@ -61,8 +61,8 @@ public class Tick implements Serializable {
         final StringBuilder sb = new StringBuilder();
 
         sb.append(Utils.formatTimeStamp(time)).append(",");
-        sb.append(contract).append(",");
         sb.append(productId).append(",");
+        sb.append(contract).append(",");
         sb.append(price).append(",");
         sb.append(qty);
 

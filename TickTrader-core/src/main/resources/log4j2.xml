@@ -4,12 +4,29 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="[%t] %d{HH:mm:ss} %-5p %-20C{1} L:%-4L - %m%n"/>
         </Console>
+        <Console name="PlainConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
         <!--<File name="File" fileName="logs/TickTrader.log" immediateFlush="false" append="false">-->
         <File name="File" fileName="logs/TickTrader.log" append="false">
             <PatternLayout pattern="[%t] %d{HH:mm:ss} %-5p %-20C{1} L:%-4L - %m%n"/>
         </File>
+        <File name="Tag" fileName="logs/TickTrader.log" append="false">
+            <PatternLayout pattern="[%t] %d{HH:mm:ss} %-5p %-20C{1} L:%-4L - %m%n"/>
+        </File>
     </Appenders>
+
     <Loggers>
+        <logger name="Tag" level="INFO" additivity="false">
+            <appender-ref ref="Tag"/>
+        </logger>
+        <logger name="com.GoThroughAllTickPerf" level="DEBUG" additivity="false">
+            <appender-ref ref="PlainConsole"/>
+        </logger>
+        <logger name="com.nv.financial.chart.service.FutureTickService" level="DEBUG" additivity="false">
+            <appender-ref ref="PlainConsole"/>
+            <!--<appender-ref ref="Console"/>-->
+        </logger>
         <Root level="DEBUG">
             <appender-ref ref="Console"/>
             <appender-ref ref="File"/>

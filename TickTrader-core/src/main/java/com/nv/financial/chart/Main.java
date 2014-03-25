@@ -2,6 +2,7 @@ package com.nv.financial.chart;
 
 import com.nv.financial.chart.quote.provider.SettleProvider;
 import com.nv.financial.chart.service.FutureTickService;
+import com.nv.financial.chart.service.SingleFutureTickService;
 import com.nv.financial.chart.util.Utils;
 
 /**
@@ -16,7 +17,7 @@ public class Main {
 
         SettleProvider stProvider = SettleProvider.getInstance();
 
-        FutureTickService futureTickService = new FutureTickService(start, end);
+        FutureTickService futureTickService = new SingleFutureTickService(start, end);
         Thread mkt = new Thread(futureTickService);
         mkt.setName("FutureTickService");
         mkt.start();

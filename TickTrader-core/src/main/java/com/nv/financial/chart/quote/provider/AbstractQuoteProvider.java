@@ -14,8 +14,8 @@ public abstract class AbstractQuoteProvider implements IQuoteProvider{
     protected String product;
     protected TimePeriod period;
 
-    public AbstractQuoteProvider(String provider, String product, TimePeriod period) {
-        this.contract = provider;
+    public AbstractQuoteProvider(String contract, String product, TimePeriod period) {
+        this.contract = contract;
         this.product = product;
         this.period = period;
     }

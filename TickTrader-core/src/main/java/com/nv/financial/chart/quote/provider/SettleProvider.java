@@ -45,7 +45,7 @@ public class SettleProvider {
                     logger.debug(settle);
                 }
             }
-            logger.debug("parse success");
+            logger.info("settle provider is ready");
         } catch (Exception ex) {
             logger.error("", ex);
         }

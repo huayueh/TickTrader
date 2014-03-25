@@ -25,23 +25,23 @@ public class QuoteService extends Observable implements IQuoteService {
     }
 
     @Override
-    public boolean isExist(String group, String product) {
-        return providers.containsKey(group + product + TimePeriod.DAY);
+    public boolean isExist(String contract, String product) {
+        return providers.containsKey(contract + product + TimePeriod.DAY);
     }
 
     @Override
-    public void creatQuoteProvider(String group, String product) {
+    public void creatQuoteProvider(String contract, String product) {
 //        for (TimePeriod period : TimePeriod.values()) {
         TimePeriod period = TimePeriod.DAY;
-            logger.info("create quote contract:" + group + "_" + product + "_" + period);
-            MemQuoteQuoteProvider mem = new MemQuoteQuoteProvider(group, product, period);
+            logger.info("create quote contract:" + contract + "_" + product + "_" + period);
+            MemQuoteQuoteProvider mem = new MemQuoteQuoteProvider(contract, product, period);
             mem.setMaxInMem(ChartSetting.getMaxInMem());
 //            CassandraQuoteProvider cassandra = new CassandraQuoteProvider(group, product, period);
 //            QuoteProviderImp insProvider = new QuoteProviderImp(group, product, period);
 //            insProvider.setMemProvider(mem);
 //            insProvider.setStorageProvider(cassandra);
-            tickObProviders.put(group + product + period.name(), mem);
-            providers.put(group + product + period.name(), mem);
+            tickObProviders.put(contract + product + period.name(), mem);
+            providers.put(contract + product + period.name(), mem);
 //        }
     }
 
@@ -50,8 +50,8 @@ public class QuoteService extends Observable implements IQuoteService {
     }
 
     @Override
-    public IQuoteProvider getQuoteProvider(String group, String product, TimePeriod period) {
-        return providers.get(group + product + period.name());
+    public IQuoteProvider getQuoteProvider(String contract, String product, TimePeriod period) {
+        return providers.get(contract + product + period.name());
     }
 
     @Override
@@ -64,8 +64,8 @@ public class QuoteService extends Observable implements IQuoteService {
     }
 
     @Override
-    public List<Quote> getQuotesBefore(int bars, long toTime, String group, String product, TimePeriod period) {
-        IQuoteProvider provider = providers.get(group + product + period.name());
+    public List<Quote> getQuotesBefore(int bars, long toTime, String contract, String product, TimePeriod period) {
+        IQuoteProvider provider = providers.get(contract + product + period.name());
         if(provider == null)
             return Collections.emptyList();
         return provider.getQuotesBefore(bars, toTime);

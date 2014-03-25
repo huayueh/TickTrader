@@ -3,7 +3,7 @@ package com.nv.financial.chart.quote.provider;
 import com.nv.financial.chart.dto.Quote;
 import com.nv.financial.chart.dto.Tick;
 import com.nv.financial.chart.quote.TimePeriod;
-import com.nv.financial.chart.storage.CsvStorage;
+import com.nv.financial.chart.storage.AdvCsvStorage;
 import com.nv.financial.chart.storage.IStorage;
 import com.nv.financial.chart.util.Utils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +24,10 @@ public class MemQuoteQuoteProvider extends AbstractQuoteProvider implements IMem
     private int maxInMem = 0;
     private AtomicReference<Tick> preTickRef = new AtomicReference<Tick>();
 
-    public MemQuoteQuoteProvider(String provider, String product, TimePeriod period) {
-        super(provider, product, period);
-        storage = new CsvStorage(provider, product, period);
-//        storage = CassandraStorage.getInstance();
-
+    public MemQuoteQuoteProvider(String contract, String product, TimePeriod period) {
+        super(contract, product, period);
+//        storage = new CsvStorage(contract, product, period);
+        storage = new AdvCsvStorage(contract, product, period);
         restoreFromStorage();
     }
 
@@ -122,7 +121,7 @@ public class MemQuoteQuoteProvider extends AbstractQuoteProvider implements IMem
         storage.save(qt);
         if (his.size() > maxInMem) {
             Quote poll = his.pollFirstEntry().getValue();
-            storage.save(poll);
+//            storage.save(poll);
         }
     }
 

@@ -12,13 +12,13 @@ import java.util.List;
  *
  */
 public interface IQuoteService {
-    public boolean isExist(String provider, String product);
+    public boolean isExist(String contract, String product);
 
-    public void creatQuoteProvider(String provider, String product);
+    public void creatQuoteProvider(String contract, String product);
 
-    public IQuoteProvider getQuoteProvider(String provider, String product, TimePeriod period);
+    public IQuoteProvider getQuoteProvider(String contract, String product, TimePeriod period);
 
     public Collection<IMemQuoteProvider> getAllMemProvider();
 
-    public List<Quote> getQuotesBefore(int bars, long toTime, String quoteProvider, String product, TimePeriod period);
+    public List<Quote> getQuotesBefore(int bars, long toTime, String contract, String product, TimePeriod period);
 }
