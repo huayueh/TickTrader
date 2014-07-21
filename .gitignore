@@ -1,0 +1,10 @@
+*.iml
+*.class
+UserAction/*
+*.bak
+*.uml
+logs/*
+.idea/*
+.settings/*
+lib/*
+target/*

@@ -23,7 +23,7 @@
         <logger name="com.GoThroughAllTickPerf" level="DEBUG" additivity="false">
             <appender-ref ref="PlainConsole"/>
         </logger>
-        <logger name="com.nv.financial.chart.service.FutureTickService" level="DEBUG" additivity="false">
+        <logger name="ticktrader.service.FutureTickService" level="DEBUG" additivity="false">
             <appender-ref ref="PlainConsole"/>
             <!--<appender-ref ref="Console"/>-->
         </logger>
