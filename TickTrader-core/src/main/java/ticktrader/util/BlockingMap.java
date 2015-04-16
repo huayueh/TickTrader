@@ -1,7 +1,7 @@
 package ticktrader.util;
 
-import com.nv.financial.chart.service.EventService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 下午 06:03
  */
 public class BlockingMap<K, V> implements Map<K, V> {
-    private static final Logger logger = Logger.getLogger(EventService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockingMap.class);
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
     private final Map<K, V> map = new ConcurrentSkipListMap<K, V>();

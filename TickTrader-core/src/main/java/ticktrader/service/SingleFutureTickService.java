@@ -1,28 +1,29 @@
 package ticktrader.service;
 
-import ticktrader.dto.Tick;
-import com.nv.financial.chart.quote.provider.IMemQuoteProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ticktrader.dto.Tick;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Observer;
 
 /**
- * Get tick from feed server
- * Prime observers are EventService, IndicatorService, QuoteProvider
+ * Author: huayueh
+ * Date: 2015/4/16
  */
 public class SingleFutureTickService extends FutureTickService {
-    private static final Logger logger = LogManager.getLogger(SingleFutureTickService.class);
-    private static final Logger tag = LogManager.getLogger("Tag");
+    private static final Logger logger = LoggerFactory.getLogger(SingleFutureTickService.class);
+    private static final Logger tag = LoggerFactory.getLogger("Tag");
 
-    public SingleFutureTickService(long start, long end) {
-        super(start, end);
+    public SingleFutureTickService(long start, long end, Observer ob) {
+        super(start, end, ob);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package ticktrader.dto;
 
-import com.nv.financial.chart.util.Utils;
-
 /**
- * User: Harvey
- * Date: 2014/1/10
- * Time: 下午 12:35
+ * Author: huayueh
+ * Date: 2015/4/16
  */
 public class Settle {
     private String contract;

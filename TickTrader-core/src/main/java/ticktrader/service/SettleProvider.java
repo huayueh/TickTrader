@@ -1,11 +1,11 @@
 package ticktrader.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ticktrader.dto.Settle;
-import com.nv.financial.chart.util.Utils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import ticktrader.util.Utils;
 
 import java.io.InputStream;
 import java.util.*;
@@ -13,12 +13,11 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * User: Harvey
- * Date: 2014/1/10
- * Time: 下午 12:30
+ * Author: huayueh
+ * Date: 2015/4/16
  */
 public class SettleProvider {
-    private static final Logger logger = LogManager.getLogger(SettleProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(SettleProvider.class);
     private static SettleProvider instance = new SettleProvider();
     protected ConcurrentNavigableMap<Long, Settle> his = new ConcurrentSkipListMap<Long, Settle>();
 
@@ -42,7 +41,7 @@ public class SettleProvider {
                     Date time = Utils.formatDate(date);
                     Settle settle = new Settle(contract, NumberUtils.toDouble(price));
                     his.put(time.getTime(), settle);
-                    logger.debug(settle);
+                    logger.debug("{}", settle);
                 }
             }
             logger.info("settle provider is ready");

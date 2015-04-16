@@ -1,16 +1,14 @@
 package ticktrader.service;
 
-import com.nv.financial.chart.service.IQuoteService;
-import com.nv.financial.chart.service.QuoteService;
-import com.nv.financial.chart.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
 import ticktrader.util.BlockingMap;
+import ticktrader.util.Utils;
 
 import java.io.*;
 import java.nio.CharBuffer;
@@ -26,13 +24,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Get tick from feed server
- * Prime observers are EventService, IndicatorService, QuoteProvider
+ * Author: huayueh
+ * Date: 2015/4/16
  */
 public class FutureTickService extends Observable implements Runnable {
-    private static final Logger logger = LogManager.getLogger(FutureTickService.class);
-    private static final Logger tag = LogManager.getLogger("Tag");
-    protected IQuoteService quoteService;
+    private static final Logger logger = LoggerFactory.getLogger(FutureTickService.class);
+    private static final Logger tag = LoggerFactory.getLogger("Tag");
+    protected Observer quoteService;
     protected SettleProvider stProvider = SettleProvider.getInstance();
     private Map<String, List> blockingMap = new BlockingMap<String, List>();
     private BlockingQueue<Tick> tickQueue = new LinkedBlockingQueue<Tick>(10000);
@@ -105,16 +103,16 @@ public class FutureTickService extends Observable implements Runnable {
         }
     }
 
-    public FutureTickService(long start, long end) {
+    public FutureTickService(long start, long end, Observer ob) {
         this.start = start;
         this.end = end;
-        quoteService = QuoteService.getInstance();
+        quoteService = ob;
         new QueueAdder("QueueAdder").start();
         new Ticker("Ticker").start();
     }
 
     public void onTick(final Tick tick) {
-        logger.info(tick);
+        logger.info("{}", tick);
         setChanged();
         notifyObservers(tick);
     }

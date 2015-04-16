@@ -1,7 +1,7 @@
 package ticktrader.storage;
 
 import ticktrader.dto.Tick;
-import com.nv.financial.chart.quote.TimePeriod;
+import ticktrader.dto.TimePeriod;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -12,10 +12,10 @@ import java.util.concurrent.Executors;
  * Date: 2014/7/21
  * Time: 下午 06:01
  */
-public class TickCsvStorage extends AdvCsvStorage {
+public class TickCsvStroage extends AdvCsvStroage {
     ExecutorService exc = Executors.newSingleThreadExecutor();
 
-    public TickCsvStorage(String contract, String product, TimePeriod period) {
+    public TickCsvStroage(String contract, String product, TimePeriod period) {
         super(contract, product, period);
     }
 

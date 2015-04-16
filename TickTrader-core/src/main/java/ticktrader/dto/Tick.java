@@ -1,15 +1,12 @@
 package ticktrader.dto;
 
-import com.nv.financial.chart.util.Utils;
-
-import java.io.Serializable;
+import ticktrader.util.Utils;
 
 /**
- * User: Harvey
- * Date: 2013/10/21
- * Time: 上午 11:54
+ * Author: huayueh
+ * Date: 2015/4/16
  */
-public class Tick implements Serializable {
+public class Tick {
     private double price;
     private int qty;
     private String productId;
