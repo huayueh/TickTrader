@@ -14,10 +14,11 @@ import java.util.Date;
 public class Utils {
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
     private static final String TIME_STAMP_FORMAT = "yyyy-MM-dd-HH:mm:ss";
+    private static final String PARSE_TIME_STAMP_FORMAT = "yyyyMMddHHmmss";
     public static final String FILE_DELIMITER = "_";
 
     public static long formatTimeStamp(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat(TIME_STAMP_FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(PARSE_TIME_STAMP_FORMAT);
         try {
             return sdf.parse(date).getTime();
         } catch (ParseException ex) {

@@ -1,8 +1,7 @@
 package ticktrader;
 
+import ticktrader.service.ParallelFutureTickService;
 import ticktrader.service.SettleProvider;
-import ticktrader.service.FutureTickService;
-import ticktrader.service.SingleFutureTickService;
 import ticktrader.util.Utils;
 
 import java.util.Observable;
@@ -15,12 +14,12 @@ import java.util.Observer;
  */
 public class Main {
     public static void main(String arg[]){
-        long start = Utils.formatDate("2007-01-01").getTime();
-        long end = Utils.formatDate("2014-01-27").getTime();
+        long start = Utils.formatDate("2014-01-01").getTime();
+        long end = Utils.formatDate("2014-12-31").getTime();
 
         SettleProvider stProvider = SettleProvider.getInstance();
 
-        FutureTickService futureTickService = new SingleFutureTickService(start, end, new Observer() {
+        ParallelFutureTickService futureTickService = new ParallelFutureTickService(start, end, new Observer() {
             @Override public void update(Observable o, Object arg) {
                 System.out.println(arg);
             }
