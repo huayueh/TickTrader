@@ -8,9 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * User: Harvey
+ * Author: huayueh
  * Date: 2014/7/21
- * Time: 下午 06:01
  */
 public class TickCsvStroage extends AdvCsvStroage {
     ExecutorService exc = Executors.newSingleThreadExecutor();

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -20,23 +21,21 @@ public class ParallelFutureTickService extends AbstractFutureTickService {
         super(start, end, ob);
     }
 
-    @Override public void run() {
-        Path path = Paths.get(baseFolder+"\\2014");
+    @Override
+    public void run() {
+        Path path = Paths.get(baseFolder + "\\2014");
         try {
             Files.list(path)
-                .parallel()
-                .forEach(p -> {
-                    try (Stream<String> stream = Files.lines(p, Charset.defaultCharset())) {
-                        stream.forEach(line -> {
-                            Tick tick = wrapTick(line);
-                            if (tick != null && "MTX".equals(tick.getProductId())) {
-                                onTick(tick);
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    .parallel()
+                    .forEach(p -> {
+                        try (Stream<String> stream = Files.lines(p, Charset.defaultCharset())) {
+                            stream.map(line -> wrapTick(line)).
+                                    filter(tick -> tick != null && "MTX".equals(tick.getProductId())).
+                                    forEach(tick -> onTick(tick));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
         } catch (IOException e) {
             e.printStackTrace();
         }

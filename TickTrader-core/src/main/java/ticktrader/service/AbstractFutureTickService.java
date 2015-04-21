@@ -19,7 +19,7 @@ public abstract class AbstractFutureTickService extends Observable implements Ru
     protected Observer observer;
     protected long start;
     protected long end;
-    protected String baseFolder = "E:\\Tick\\Future_Tick\\";
+    protected String baseFolder = "D:\\Tick\\Future_rpt\\";
 
     public AbstractFutureTickService(long start, long end, Observer ob) {
         this.start = start;
