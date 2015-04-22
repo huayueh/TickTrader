@@ -55,7 +55,7 @@ public abstract class AbstractFutureTickService extends Observable implements Ru
             if (product.equals("FIMTX") || product.equals("MXF")) {
                 product = "MTX";
             }
-            tick.setProductId(product);
+            tick.setSymbol(product);
             tick.setContract(contract);
             tick.setQty(NumberUtils.toInt(qty));
         }

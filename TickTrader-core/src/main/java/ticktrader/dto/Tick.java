@@ -9,7 +9,7 @@ import ticktrader.util.Utils;
 public class Tick {
     private double price;
     private int qty;
-    private String productId;
+    private String symbol;
     private String contract;
     private long time;
 
@@ -37,12 +37,12 @@ public class Tick {
         this.qty = qty;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public long getTime() {
@@ -58,7 +58,7 @@ public class Tick {
         final StringBuilder sb = new StringBuilder();
 
         sb.append(Utils.formatTimeStamp(time)).append(",");
-        sb.append(productId).append(",");
+        sb.append(symbol).append(",");
         sb.append(contract).append(",");
         sb.append(price).append(",");
         sb.append(qty);

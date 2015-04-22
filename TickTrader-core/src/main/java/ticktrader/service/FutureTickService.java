@@ -45,7 +45,7 @@ public class FutureTickService extends AbstractFutureTickService {
                 try (Stream<String> stream = Files.lines(file.toPath(), Charset.defaultCharset())) {
                     stream.forEach(line -> {
                         Tick tick = wrapTick(line);
-                        if (tick != null && "MTX".equals(tick.getProductId())){
+                        if (tick != null && "MTX".equals(tick.getSymbol())){
                             onTick(tick);
                         }
                     });

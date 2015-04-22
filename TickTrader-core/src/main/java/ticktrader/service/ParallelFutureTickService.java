@@ -1,14 +1,11 @@
 package ticktrader.service;
 
-import ticktrader.dto.Tick;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Observer;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -30,8 +27,8 @@ public class ParallelFutureTickService extends AbstractFutureTickService {
                     .forEach(p -> {
                         try (Stream<String> stream = Files.lines(p, Charset.defaultCharset())) {
                             stream.map(line -> wrapTick(line)).
-                                    filter(tick -> tick != null && "MTX".equals(tick.getProductId())).
-                                    forEach(tick -> onTick(tick));
+                                filter(tick -> tick != null && "MTX".equals(tick.getSymbol())).
+                                forEach(tick -> onTick(tick));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
