@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
 import ticktrader.util.Utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,7 +18,7 @@ import java.util.Observer;
  */
 public abstract class AbstractFutureTickService extends Observable implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(FutureTickService.class);
-    protected Observer observer;
+    protected final Observer observer;
     protected long start;
     protected long end;
     protected String baseFolder = "D:\\Tick\\Future_rpt\\";
@@ -24,11 +26,12 @@ public abstract class AbstractFutureTickService extends Observable implements Ru
     public AbstractFutureTickService(long start, long end, Observer ob) {
         this.start = start;
         this.end = end;
-        observer = ob;
+        this.observer = ob;
+        this.addObserver(ob);
     }
 
     public void onTick(final Tick tick) {
-        logger.info("{}", tick);
+        logger.debug("{}", tick);
         setChanged();
         notifyObservers(tick);
     }
@@ -47,7 +50,7 @@ public abstract class AbstractFutureTickService extends Observable implements Ru
             time = time.substring(0, 6);
             String price = ary[4].trim();
             String qty = ary[5].trim();
-            long ltime = Utils.formatTimeStamp(date + time);
+            LocalDateTime ltime = LocalDateTime.parse(date + time, DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
             tick = new Tick();
             tick.setTime(ltime);

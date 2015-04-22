@@ -1,6 +1,7 @@
 package ticktrader.dto;
 
-import ticktrader.util.Utils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Author: huayueh
@@ -11,7 +12,7 @@ public class Tick {
     private int qty;
     private String symbol;
     private String contract;
-    private long time;
+    private LocalDateTime localDateTime;
 
     public String getContract() {
         return contract;
@@ -45,19 +46,19 @@ public class Tick {
         this.symbol = symbol;
     }
 
-    public long getTime() {
-        return time;
+    public LocalDateTime getTime() {
+        return localDateTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setTime(LocalDateTime time) {
+        this.localDateTime = time;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append(Utils.formatTimeStamp(time)).append(",");
+        sb.append(localDateTime.format(DateTimeFormatter.ISO_DATE_TIME)).append(",");
         sb.append(symbol).append(",");
         sb.append(contract).append(",");
         sb.append(price).append(",");

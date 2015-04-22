@@ -2,6 +2,7 @@ package ticktrader;
 
 import ticktrader.service.FutureTickService;
 import ticktrader.service.SettleProvider;
+import ticktrader.strategy.DayTradeStrategy;
 import ticktrader.util.Utils;
 
 /**
@@ -14,8 +15,8 @@ public class Main {
         long end = Utils.formatDate("2014-12-31").getTime();
 
         SettleProvider stProvider = SettleProvider.getInstance();
-
-        FutureTickService futureTickService = new FutureTickService(start, end, (o, arg1) -> System.out.println(arg1));
+        DayTradeStrategy strategy = new DayTradeStrategy();
+        FutureTickService futureTickService = new FutureTickService(start, end, strategy);
         Thread mkt = new Thread(futureTickService);
         mkt.setName("FutureTickService");
         mkt.start();

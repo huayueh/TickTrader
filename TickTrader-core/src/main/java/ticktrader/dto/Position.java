@@ -1,5 +1,7 @@
 package ticktrader.dto;
 
+import java.time.LocalDateTime;
+
 /**
  * Author: huayueh
  * Date: 2015/4/21
@@ -10,7 +12,7 @@ public class Position {
     private final double price;
     private final double qty;
     private final Side side;
-    private final long openTime;
+    private final LocalDateTime openTime;
     private long closeTime;
     private double pnl;
 
@@ -19,7 +21,7 @@ public class Position {
         Sell;
     }
 
-    public Position(String symbol, String contract, Side side, double price, double qty, long openTime) {
+    public Position(String symbol, String contract, Side side, double price, double qty, LocalDateTime openTime) {
         this.symbol = symbol;
         this.contract = contract;
         this.side = side;

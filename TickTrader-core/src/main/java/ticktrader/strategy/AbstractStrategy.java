@@ -16,12 +16,18 @@ public abstract class AbstractStrategy implements Observer {
     public void update(Observable o, Object arg) {
         if (arg.getClass().isAssignableFrom(Tick.class)){
             cntPnl((Tick) arg);
+            onTick((Tick) arg);
         }
     }
 
     protected void cntPnl(Tick tick){
+        //TODO: contract will have W4
         String key = tick.getSymbol() + tick.getContract();
-        Queue<Position> queue = positions.get(key);
+        Queue<Position> queue = positions.get(tick.getSymbol());
+
+        //TODO: Optional
+        if (queue == null)
+            return;
 
         for (Position pos : queue){
             // concept: over 0 profit

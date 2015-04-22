@@ -3,6 +3,7 @@ package ticktrader.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
+import ticktrader.strategy.DayTradeStrategy;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +57,9 @@ public class FutureTickService extends AbstractFutureTickService {
             calStart.add(Calendar.DATE, 1);
             start = calStart.getTimeInMillis();
         }
+        //TODO: move out from TickService
+        double totalPnl = ((DayTradeStrategy)observer).getTotalPnl();
+        System.out.println("Total pnl : " + totalPnl);
     }
 
 }
