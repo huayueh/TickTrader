@@ -1,5 +1,8 @@
 package ticktrader.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -56,14 +59,11 @@ public class Tick {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append(localDateTime.format(DateTimeFormatter.ISO_DATE_TIME)).append(",");
-        sb.append(symbol).append(",");
-        sb.append(contract).append(",");
-        sb.append(price).append(",");
-        sb.append(qty);
-
-        return sb.toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
+                append(localDateTime).
+                append(symbol).
+                append(contract).
+                append(price).
+                append(qty).build();
     }
 }

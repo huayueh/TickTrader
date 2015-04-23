@@ -1,14 +1,15 @@
 package ticktrader.service;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.Settle;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import ticktrader.util.Utils;
 
 import java.io.InputStream;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class SettleProvider {
     private static final Logger logger = LoggerFactory.getLogger(SettleProvider.class);
     private static SettleProvider instance = new SettleProvider();
-    protected ConcurrentNavigableMap<Long, Settle> his = new ConcurrentSkipListMap<Long, Settle>();
+    protected ConcurrentNavigableMap<LocalDate, Settle> his = new ConcurrentSkipListMap<>();
 
     private SettleProvider() {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("settle.csv");
@@ -28,7 +29,7 @@ public class SettleProvider {
 
         try {
             scan = new Scanner(is);
-            int idx = 0;
+
             while (scan.hasNext()) {
                 line = scan.next();
                 String[] ary = StringUtils.split(line, ",");
@@ -37,11 +38,13 @@ public class SettleProvider {
                     String date = ary[0].trim();
                     String contract = ary[1].trim();
                     String price = ary[2].trim();
-                    date = StringUtils.replace(date, "/", "-");
-                    Date time = Utils.formatDate(date);
-                    Settle settle = new Settle(contract, NumberUtils.toDouble(price));
-                    his.put(time.getTime(), settle);
-                    logger.debug("{}", settle);
+                    LocalDate ldate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/M/d"));
+                    //remove weekly contract
+                    if (!contract.contains("W")){
+                        Settle settle = new Settle(ldate, contract, NumberUtils.toDouble(price));
+                        his.put(ldate, settle);
+                        logger.debug("{}", settle);
+                    }
                 }
             }
             logger.info("settle provider is ready");
@@ -54,11 +57,8 @@ public class SettleProvider {
         return instance;
     }
 
-    /**
-     * 差一天避免拉高壓低結算
-     * */
-    public String currentContract(long time){
-        long key = his.ceilingKey(time);
+    public String currentContract(LocalDate time){
+        LocalDate key = his.ceilingKey(time);
         Settle settle = his.get(key);
         return settle.getContract();
     }

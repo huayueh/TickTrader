@@ -17,7 +17,7 @@
             <!--<appender-ref ref="PlainConsole"/>-->
             <!--&lt;!&ndash;<appender-ref ref="Console"/>&ndash;&gt;-->
         <!--</logger>-->
-        <Root level="ERROR">
+        <Root level="DEBUG">
             <appender-ref ref="Console"/>
             <appender-ref ref="File"/>
         </Root>

@@ -1,5 +1,8 @@
 package ticktrader.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +21,7 @@ public class Position {
 
     public enum Side {
         Buy,
-        Sell;
+        Sell
     }
 
     public Position(String symbol, String contract, Side side, double price, double qty, LocalDateTime openTime) {
@@ -56,6 +59,18 @@ public class Position {
 
     public double getQty() {
         return qty;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
+                append(symbol).
+                append(contract).
+                append(price).
+                append(qty).
+                append(side.name()).
+                append(openTime).
+                append(closeTime).build();
     }
 
 //    public void fillQuantity(double qty) {
