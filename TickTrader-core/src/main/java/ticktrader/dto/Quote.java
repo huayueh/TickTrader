@@ -2,7 +2,8 @@ package ticktrader.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import ticktrader.util.Utils;
+
+import java.time.LocalDateTime;
 
 /**
  * Author: huayueh
@@ -11,7 +12,7 @@ import ticktrader.util.Utils;
 public class Quote {
     private String group;
     private String product;
-	private long time;
+	private LocalDateTime time;
     private long lastTickTS;
 	private double open, high, low, close;
     private double avgPrice;
@@ -25,14 +26,14 @@ public class Quote {
 	 * This constructor used to create a new real time quote whose open, high, low, shutdown values are
 	 * the same as the last completed bar.
 	 */
-	public Quote(long time) {
+	public Quote(LocalDateTime time) {
         this.time = time;
 	}
 
 	/**
 	 * This constructor used to create a new real time quote
 	 */
-	public Quote(long time, double open, double high, double low,
+	public Quote(LocalDateTime time, double open, double high, double low,
         double close, int volume) {
 		this.time = time;
 		this.open = open;
@@ -62,7 +63,7 @@ public class Quote {
 		return close;
 	}
 
-	public long getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
 
@@ -142,7 +143,7 @@ public class Quote {
         sb.append(product).append(",");
         if(period != null)
             sb.append(period.name()).append(",");
-        sb.append(Utils.formatTimeStamp(time)).append(",");
+        sb.append(time).append(",");
         sb.append(open).append(",");
         sb.append(high).append(",");
         sb.append(low).append(",");

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import ticktrader.dto.Quote;
 import ticktrader.dto.Tick;
 import ticktrader.dto.TimePeriod;
-import ticktrader.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +20,13 @@ import java.io.IOException;
  */
 public class CsvStroage implements Stroage {
     private static final Logger logger = LoggerFactory.getLogger(CsvStroage.class);
+    public static final String FILE_DELIMITER = "_";
     private File qtFile;
     private File tickFile;
 
     public CsvStroage(String provider, String product, TimePeriod period){
         String strPath = "Quote" + File.separator + period.name() + File.separator +
-                provider + Utils.FILE_DELIMITER + product + Utils.FILE_DELIMITER + period.name() + ".csv";
+                provider + FILE_DELIMITER + product + FILE_DELIMITER + period.name() + ".csv";
         qtFile = new File(strPath);
         strPath = "Tick" + File.separator + product + ".csv";
         tickFile = new File(strPath);

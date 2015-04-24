@@ -17,12 +17,12 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * Author: huayueh
  * Date: 2015/4/16
  */
-public class SettleProvider {
-    private static final Logger logger = LoggerFactory.getLogger(SettleProvider.class);
-    private static SettleProvider instance = new SettleProvider();
+public class SettleContractProvider implements ContractProvider {
+    private static final Logger logger = LoggerFactory.getLogger(SettleContractProvider.class);
+    private static SettleContractProvider instance = new SettleContractProvider();
     protected ConcurrentNavigableMap<LocalDate, Settle> his = new ConcurrentSkipListMap<>();
 
-    private SettleProvider() {
+    private SettleContractProvider() {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("settle.csv");
         Scanner scan;
         String line;
@@ -40,7 +40,7 @@ public class SettleProvider {
                     String price = ary[2].trim();
                     LocalDate ldate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/M/d"));
                     //remove weekly contract
-                    if (!contract.contains("W")){
+                    if (!contract.contains("W")) {
                         Settle settle = new Settle(ldate, contract, NumberUtils.toDouble(price));
                         his.put(ldate, settle);
                         logger.debug("{}", settle);
@@ -53,11 +53,12 @@ public class SettleProvider {
         }
     }
 
-    public static SettleProvider getInstance() {
+    public static SettleContractProvider getInstance() {
         return instance;
     }
 
-    public String currentContract(LocalDate time){
+    @Override
+    public String closestContract(LocalDate time) {
         LocalDate key = his.ceilingKey(time);
         Settle settle = his.get(key);
         return settle.getContract();

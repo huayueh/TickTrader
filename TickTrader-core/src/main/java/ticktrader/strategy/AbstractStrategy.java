@@ -9,7 +9,7 @@ import java.util.*;
  * Author: huayueh
  * Date: 2015/4/21
  */
-public abstract class AbstractStrategy implements Observer {
+public abstract class AbstractStrategy implements Strategy {
     protected Map<String, Queue<Position>> positions = new HashMap<>();
 
     @Override
@@ -21,11 +21,9 @@ public abstract class AbstractStrategy implements Observer {
     }
 
     protected void cntPnl(Tick tick){
-        //TODO: contract will have W4
         String key = tick.getSymbol() + tick.getContract();
         Queue<Position> queue = positions.get(tick.getSymbol());
 
-        //TODO: Optional
         if (queue == null)
             return;
 
@@ -40,5 +38,4 @@ public abstract class AbstractStrategy implements Observer {
         onTick(tick);
     }
 
-    abstract protected void onTick(Tick tick);
 }

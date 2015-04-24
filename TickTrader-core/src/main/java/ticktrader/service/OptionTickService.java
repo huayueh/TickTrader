@@ -5,23 +5,16 @@ import org.apache.commons.lang3.math.NumberUtils;
 import ticktrader.dto.Tick;
 import ticktrader.strategy.Strategy;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Observer;
-import java.util.stream.Stream;
 
 /**
  * Author: huayueh
- * Date: 2015/4/17
+ * Date: 2015/4/24
  */
-public class FutureTickService extends AbstractTickService {
+public class OptionTickService extends AbstractTickService {
 
-    public FutureTickService(String baseFolder, Strategy ob) {
+    public OptionTickService(String baseFolder, Strategy ob) {
         super(baseFolder, ob);
     }
 
@@ -30,28 +23,28 @@ public class FutureTickService extends AbstractTickService {
         Tick tick = null;
 
         String[] ary = StringUtils.split(line, ",");
-        //¥æ©ö¤é´Á,°Ó«~¥N¸¹,¥æ³Î¦~¤ë,¦¨¥æ®É¶¡,¦¨¥æ»ù®æ,¦¨¥æ¼Æ¶q(B+S)
         String date = ary[0].trim();
-        if (ary.length > 5 && NumberUtils.isDigits(date)) {
+        //äº¤æ˜“æ—¥æœŸ,å•†å“ä»£è™Ÿ,å±¥ç´„åƒ¹æ ¼,åˆ°æœŸæœˆä»½(é€±åˆ¥),è²·è³£æ¬Šåˆ¥,æˆäº¤æ™‚é–“,æˆäº¤åƒ¹æ ¼,æˆäº¤æ•¸é‡(B or S),é–‹ç›¤é›†åˆç«¶åƒ¹
+        if (ary.length > 8 && NumberUtils.isDigits(date)) {
             String symbol = ary[1].trim();
-            String contract = ary[2].trim();
-            String time = ary[3].trim();
+            String exPrice = ary[2].trim();
+            String contract = ary[3].trim();
+            String putCall = ary[4].trim();
+            String time = ary[5].trim();
             time = time.substring(0, 6);
-            String price = ary[4].trim();
-            String qty = ary[5].trim();
+            String price = ary[6].trim();
+            String qty = ary[7].trim();
             LocalDateTime ltime = LocalDateTime.parse(date + time, DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
             tick = new Tick();
             tick.setTime(ltime);
             tick.setPrice(NumberUtils.toDouble(price));
-            if (symbol.equals("FIMTX") || symbol.equals("MXF")) {
-                symbol = "MTX";
-            }
             tick.setSymbol(symbol);
             tick.setContract(contract);
+            tick.setExPrice(NumberUtils.toInt(exPrice));
+            tick.setPutOrCall(putCall);
             tick.setQty(NumberUtils.toInt(qty));
         }
         return tick;
     }
 }
-

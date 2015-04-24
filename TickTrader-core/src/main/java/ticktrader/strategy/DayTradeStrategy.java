@@ -2,7 +2,7 @@ package ticktrader.strategy;
 
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
-import ticktrader.service.SettleProvider;
+import ticktrader.service.SettleContractProvider;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,14 +21,17 @@ public class DayTradeStrategy extends AbstractStrategy {
     private String contract;
 
     @Override
-    protected void onTick(Tick tick) {
+    public void onTick(Tick tick) {
         if (!tick.getTime().toLocalDate().equals(date)) {
             date = tick.getTime().toLocalDate();
-            contract = SettleProvider.getInstance().currentContract(date);
+            contract = SettleContractProvider.getInstance().closestContract(date);
             tradeCnt = 0;
         }
 
         if (tradeCnt == 1)
+            return;
+
+        if (!"MTX".equals(tick.getSymbol()))
             return;
 
         LocalTime tickTime = tick.getTime().toLocalTime();
@@ -56,7 +59,8 @@ public class DayTradeStrategy extends AbstractStrategy {
         }
     }
 
-    public double getTotalPnl() {
+    @Override
+    public double getPnl() {
         return totalPnl;
     }
 }

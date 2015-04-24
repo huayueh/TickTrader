@@ -16,6 +16,8 @@ public class Tick {
     private String symbol;
     private String contract;
     private LocalDateTime localDateTime;
+    private int exPrice;
+    private String putOrCall;
 
     public String getContract() {
         return contract;
@@ -55,6 +57,22 @@ public class Tick {
 
     public void setTime(LocalDateTime time) {
         this.localDateTime = time;
+    }
+
+    public void setExPrice(int exPrice) {
+        this.exPrice = exPrice;
+    }
+
+    public void setPutOrCall(String putOrCall) {
+        this.putOrCall = putOrCall;
+    }
+
+    public int getExPrice() {
+        return exPrice;
+    }
+
+    public String getPutOrCall() {
+        return putOrCall;
     }
 
     @Override
