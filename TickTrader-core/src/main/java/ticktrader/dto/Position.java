@@ -16,7 +16,8 @@ public class Position {
     private final double qty;
     private final Side side;
     private final LocalDateTime openTime;
-    private long closeTime;
+    private LocalDateTime closeTime;
+    private double closePrice;
     private double pnl;
 
     public enum Side {
@@ -66,10 +67,11 @@ public class Position {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
                 append(symbol).
                 append(contract).
+                append(openTime).
                 append(price).
                 append(qty).
                 append(side.name()).
-                append(openTime).
+                append(closePrice).
                 append(closeTime).build();
     }
 
@@ -77,9 +79,8 @@ public class Position {
 //        qtyRemain -= qty;
 //    }
 //
-//    public void fillAllQuantity(double price, long time) {
-//        qtyRemain = 0;
-//        closePrice = price;
-//        closeTime = time;
-//    }
+    public void fillAllQuantity(double price, LocalDateTime time) {
+        closeTime = time;
+        closePrice = price;
+    }
 }
