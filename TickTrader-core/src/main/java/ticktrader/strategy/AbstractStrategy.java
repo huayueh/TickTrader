@@ -2,6 +2,7 @@ package ticktrader.strategy;
 
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
+import ticktrader.recorder.Recorder;
 
 import java.util.*;
 
@@ -10,8 +11,13 @@ import java.util.*;
  * Date: 2015/4/21
  */
 public abstract class AbstractStrategy implements Strategy {
+    private final Recorder recorder;
     protected Map<String, Queue<Position>> positions = new HashMap<>();
     protected double totalPnl = 0;
+
+    public AbstractStrategy(Recorder recorder){
+        this.recorder = recorder;
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -35,9 +41,8 @@ public abstract class AbstractStrategy implements Strategy {
         while (posQueue != null && !posQueue.isEmpty()) {
             Position position = posQueue.poll();
             position.fillAllQuantity(tick.getPrice(), tick.getTime());
-            double pnl = position.getPnl();
-            totalPnl += pnl;
-            System.out.println(position + " " + pnl);
+            totalPnl += position.getPnl();
+            recorder.record(position);
         }
     }
 
@@ -59,7 +64,8 @@ public abstract class AbstractStrategy implements Strategy {
         onTick(tick);
     }
 
-    public double getTotalPnl() {
+    @Override
+    public double getPnl() {
         return totalPnl;
     }
 }

@@ -16,6 +16,8 @@ public class Position {
     private final double qty;
     private final Side side;
     private final LocalDateTime openTime;
+    private final PutOrCall putOrCall;
+    private final int exPrice;
     private LocalDateTime closeTime;
     private double closePrice;
     private double pnl;
@@ -25,13 +27,15 @@ public class Position {
         Sell
     }
 
-    public Position(String symbol, String contract, Side side, double price, double qty, LocalDateTime openTime) {
-        this.symbol = symbol;
-        this.contract = contract;
-        this.side = side;
-        this.price = price;
-        this.qty = qty;
-        this.openTime = openTime;
+    public Position(Builder builder) {
+        this.symbol = builder.symbol;
+        this.contract = builder.contract;
+        this.side = builder.side;
+        this.price = builder.price;
+        this.qty = builder.qty;
+        this.openTime = builder.openTime;
+        this.putOrCall = builder.putOrCall;
+        this.exPrice = builder.exPrice;
     }
 
     public double getPrice() {
@@ -75,12 +79,68 @@ public class Position {
                 append(closeTime).build();
     }
 
-//    public void fillQuantity(double qty) {
+    //    public void fillQuantity(double qty) {
 //        qtyRemain -= qty;
 //    }
 //
     public void fillAllQuantity(double price, LocalDateTime time) {
         closeTime = time;
         closePrice = price;
+    }
+
+    public static class Builder {
+        private String symbol;
+        private String contract;
+        private double price;
+        private double qty;
+        private Side side;
+        private LocalDateTime openTime;
+        private PutOrCall putOrCall = PutOrCall.NONE;
+        private int exPrice;
+
+        public Builder exercisePrice(int exPrice) {
+            this.exPrice = exPrice;
+            return this;
+        }
+
+        public Builder symbol(String symbol) {
+            this.symbol = symbol;
+            return this;
+        }
+
+        public Builder contract(String contract) {
+            this.contract = contract;
+            return this;
+        }
+
+        public Builder price(double price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder qty(double qty) {
+            this.qty = qty;
+            return this;
+        }
+
+        public Builder side(Side side) {
+            this.side = side;
+            return this;
+        }
+
+        public Builder openTime(LocalDateTime openTime) {
+            this.openTime = openTime;
+            return this;
+        }
+
+        public Builder putOrCall(PutOrCall putOrCall) {
+            this.putOrCall = putOrCall;
+            return this;
+        }
+
+        public Position build(){
+            //TODO: check
+            return new Position(this);
+        }
     }
 }

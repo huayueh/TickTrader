@@ -6,15 +6,8 @@ import ticktrader.dto.PutOrCall;
 import ticktrader.dto.Tick;
 import ticktrader.strategy.Strategy;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Observer;
-import java.util.stream.Stream;
 
 /**
  * Author: huayueh
@@ -22,8 +15,8 @@ import java.util.stream.Stream;
  */
 public class FutureTickService extends AbstractTickService {
 
-    public FutureTickService(String baseFolder, Strategy ob) {
-        super(baseFolder, ob);
+    public FutureTickService(String baseFolder, Strategy strategy) {
+        super(baseFolder, strategy);
     }
 
     @Override

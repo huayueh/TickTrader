@@ -1,6 +1,5 @@
 package ticktrader.service;
 
-import com.pretty_tools.dde.DDEException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
@@ -23,18 +22,18 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractTickService extends Observable implements TickService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractTickService.class);
-    protected final Strategy observer;
+    protected final Strategy strategy;
     protected String baseFolder;
     private List<Topic> topics = new ArrayList<>();
 
     public AbstractTickService(String baseFolder, Strategy ob) {
         this.baseFolder = baseFolder;
-        this.observer = ob;
+        this.strategy = ob;
         this.addObserver(ob);
     }
 
     public AbstractTickService(Strategy ob) {
-        this.observer = ob;
+        this.strategy = ob;
         this.addObserver(ob);
     }
 
@@ -76,6 +75,7 @@ public abstract class AbstractTickService extends Observable implements TickServ
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Total pnl : " + strategy.getPnl());
     }
 
     protected abstract Tick wrapTick(String line);

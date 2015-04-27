@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import ticktrader.dto.PutOrCall;
 import ticktrader.dto.Tick;
 import ticktrader.dto.Topic;
+import ticktrader.recorder.PrintRecorder;
 import ticktrader.strategy.PrintStrategy;
 import ticktrader.strategy.Strategy;
 
@@ -118,7 +119,7 @@ public class YesWinTickService extends AbstractTickService {
     }
 
     public static void main(String arg[]) throws InterruptedException {
-        TickService tickService = new YesWinTickService(new PrintStrategy());
+        TickService tickService = new YesWinTickService(new PrintStrategy(new PrintRecorder()));
         new Thread(tickService).start();
         TimeUnit.SECONDS.sleep(2);
         tickService.addTopic(new Topic("TXO", "", 10000, PutOrCall.PUT));
