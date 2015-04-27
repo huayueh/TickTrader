@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Date: 2015/4/27
  */
 public class Topic {
+    public static final String ANY = "ANY";
     private final String symbol;
     private final String contract;
     private final int exPrice;
@@ -57,11 +58,16 @@ public class Topic {
             return false;
 
         Topic topic = (Topic)obj;
-        return new EqualsBuilder().
-                append(symbol, topic.symbol).
-                append(contract, topic.contract).
+        EqualsBuilder builder = new EqualsBuilder().
                 append(exPrice, topic.exPrice).
-                append(putOrCall, topic.putOrCall).
-                build();
+                append(putOrCall, topic.putOrCall);
+
+        if (!symbol.equals(ANY) && !topic.symbol.equals(ANY))
+            builder.append(symbol, topic.symbol);
+
+        if (!contract.equals(ANY) && !topic.contract.equals(ANY))
+            builder.append(contract, topic.contract);
+
+        return builder.build();
     }
 }

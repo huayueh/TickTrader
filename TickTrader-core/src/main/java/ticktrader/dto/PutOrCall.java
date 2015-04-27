@@ -6,5 +6,6 @@ package ticktrader.dto;
  */
 public enum PutOrCall {
     PUT,
-    CALL
+    CALL,
+    NONE
 }

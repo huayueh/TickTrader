@@ -17,7 +17,7 @@ public class Tick {
     private String contract;
     private LocalDateTime localDateTime;
     private int exPrice;
-    private PutOrCall putOrCall;
+    private PutOrCall putOrCall = PutOrCall.NONE;
 
     public String getContract() {
         return contract;

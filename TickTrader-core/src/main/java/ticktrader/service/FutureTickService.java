@@ -2,6 +2,7 @@ package ticktrader.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import ticktrader.dto.PutOrCall;
 import ticktrader.dto.Tick;
 import ticktrader.strategy.Strategy;
 
@@ -50,6 +51,9 @@ public class FutureTickService extends AbstractTickService {
             tick.setSymbol(symbol);
             tick.setContract(contract);
             tick.setQty(NumberUtils.toInt(qty));
+            //for option
+            tick.setPutOrCall(PutOrCall.NONE);
+            tick.setExPrice(0);
         }
         return tick;
     }
