@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Topic {
     public static final String ANY = "ANY";
+    public static final int ANY_PRICE = 0;
     private final String symbol;
     private final String contract;
     private final int exPrice;
@@ -59,8 +60,10 @@ public class Topic {
 
         Topic topic = (Topic)obj;
         EqualsBuilder builder = new EqualsBuilder().
-                append(exPrice, topic.exPrice).
                 append(putOrCall, topic.putOrCall);
+
+        if (exPrice != ANY_PRICE && topic.exPrice != ANY_PRICE)
+            builder.append(exPrice, topic.exPrice);
 
         if (!symbol.equals(ANY) && !topic.symbol.equals(ANY))
             builder.append(symbol, topic.symbol);

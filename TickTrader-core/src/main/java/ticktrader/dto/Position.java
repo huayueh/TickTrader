@@ -68,7 +68,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
+        ToStringBuilder builder =  new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
                 append(symbol).
                 append(contract).
                 append(openTime).
@@ -76,7 +76,11 @@ public class Position {
                 append(qty).
                 append(side.name()).
                 append(closePrice).
-                append(closeTime).build();
+                append(closeTime);
+        if (!putOrCall.equals(PutOrCall.NONE)){
+            builder.append(putOrCall).append(exPrice);
+        }
+        return builder.build();
     }
 
     //    public void fillQuantity(double qty) {

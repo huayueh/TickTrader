@@ -81,11 +81,15 @@ public class Tick {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
                 append(localDateTime).
                 append(symbol).
                 append(contract).
                 append(price).
-                append(qty).build();
+                append(qty);
+        if (!putOrCall.equals(PutOrCall.NONE)){
+            builder.append(putOrCall).append(exPrice);
+        }
+        return builder.build();
     }
 }
