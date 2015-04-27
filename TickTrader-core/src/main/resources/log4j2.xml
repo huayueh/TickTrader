@@ -13,10 +13,10 @@
     </Appenders>
 
     <Loggers>
-        <!--<logger name="ticktrader.service.FutureTickService" level="DEBUG" additivity="false">-->
-            <!--<appender-ref ref="PlainConsole"/>-->
-            <!--&lt;!&ndash;<appender-ref ref="Console"/>&ndash;&gt;-->
-        <!--</logger>-->
+        <logger name="ticktrader.service.YesWinTickService" level="DEBUG" additivity="false">
+            <appender-ref ref="PlainConsole"/>
+            <!--<appender-ref ref="Console"/>-->
+        </logger>
         <Root level="ERROR">
             <appender-ref ref="Console"/>
             <appender-ref ref="File"/>

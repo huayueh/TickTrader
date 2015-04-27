@@ -17,7 +17,7 @@ public class Tick {
     private String contract;
     private LocalDateTime localDateTime;
     private int exPrice;
-    private String putOrCall;
+    private PutOrCall putOrCall;
 
     public String getContract() {
         return contract;
@@ -63,7 +63,7 @@ public class Tick {
         this.exPrice = exPrice;
     }
 
-    public void setPutOrCall(String putOrCall) {
+    public void setPutOrCall(PutOrCall putOrCall) {
         this.putOrCall = putOrCall;
     }
 
@@ -71,8 +71,12 @@ public class Tick {
         return exPrice;
     }
 
-    public String getPutOrCall() {
+    public PutOrCall getPutOrCall() {
         return putOrCall;
+    }
+
+    public Topic getTopic(){
+        return new Topic(symbol, contract, exPrice, putOrCall);
     }
 
     @Override

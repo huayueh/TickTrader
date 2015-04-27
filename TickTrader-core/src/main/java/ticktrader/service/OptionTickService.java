@@ -2,6 +2,7 @@ package ticktrader.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import ticktrader.dto.PutOrCall;
 import ticktrader.dto.Tick;
 import ticktrader.strategy.Strategy;
 
@@ -30,6 +31,7 @@ public class OptionTickService extends AbstractTickService {
             String exPrice = ary[2].trim();
             String contract = ary[3].trim();
             String putCall = ary[4].trim();
+            PutOrCall pc = "P".equals(putCall)?PutOrCall.PUT:PutOrCall.CALL;
             String time = ary[5].trim();
             time = time.substring(0, 6);
             String price = ary[6].trim();
@@ -42,7 +44,7 @@ public class OptionTickService extends AbstractTickService {
             tick.setSymbol(symbol);
             tick.setContract(contract);
             tick.setExPrice(NumberUtils.toInt(exPrice));
-            tick.setPutOrCall(putCall);
+            tick.setPutOrCall(pc);
             tick.setQty(NumberUtils.toInt(qty));
         }
         return tick;

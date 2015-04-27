@@ -30,7 +30,7 @@ public class FutureTickService extends AbstractTickService {
         Tick tick = null;
 
         String[] ary = StringUtils.split(line, ",");
-        //¥æ©ö¤é´Á,°Ó«~¥N¸¹,¥æ³Î¦~¤ë,¦¨¥æ®É¶¡,¦¨¥æ»ù®æ,¦¨¥æ¼Æ¶q(B+S)
+        //äº¤æ˜“æ—¥æœŸ,å•†å“ä»£è™Ÿ,åˆ°æœŸæœˆä»½(é€±åˆ¥),æˆäº¤æ™‚é–“,æˆäº¤åƒ¹æ ¼,æˆäº¤æ•¸é‡(B+S),è¿‘æœˆåƒ¹æ ¼,é æœˆåƒ¹æ ¼,é–‹ç›¤é›†åˆç«¶åƒ¹
         String date = ary[0].trim();
         if (ary.length > 5 && NumberUtils.isDigits(date)) {
             String symbol = ary[1].trim();

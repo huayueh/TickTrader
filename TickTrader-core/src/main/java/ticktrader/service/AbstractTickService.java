@@ -1,8 +1,10 @@
 package ticktrader.service;
 
+import com.pretty_tools.dde.DDEException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
+import ticktrader.dto.Topic;
 import ticktrader.strategy.Strategy;
 
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.stream.Stream;
 
@@ -21,6 +25,7 @@ public abstract class AbstractTickService extends Observable implements TickServ
     private static final Logger logger = LoggerFactory.getLogger(AbstractTickService.class);
     protected final Strategy observer;
     protected String baseFolder;
+    private List<Topic> topics = new ArrayList<>();
 
     public AbstractTickService(String baseFolder, Strategy ob) {
         this.baseFolder = baseFolder;
@@ -28,10 +33,29 @@ public abstract class AbstractTickService extends Observable implements TickServ
         this.addObserver(ob);
     }
 
+    public AbstractTickService(Strategy ob) {
+        this.observer = ob;
+        this.addObserver(ob);
+    }
+
+    @Override
+    public void addTopic(Topic topic) {
+        topics.add(topic);
+    }
+
+    @Override
+    public void removeTopic(Topic topic) {
+        topics.remove(topic);
+    }
+
+
+    @Override
     public void onTick(final Tick tick) {
-        logger.debug("{}", tick);
-        setChanged();
-        notifyObservers(tick);
+        if (topics.contains(tick.getTopic())) {
+            logger.debug("{}", tick);
+            setChanged();
+            notifyObservers(tick);
+        }
     }
 
     @Override
