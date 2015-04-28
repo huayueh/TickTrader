@@ -4,7 +4,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Author: huayueh
@@ -18,7 +17,7 @@ public class Tick {
     private String contract;
     private LocalDateTime localDateTime;
     private int exPrice;
-    private PutOrCall putOrCall = PutOrCall.NONE;
+    private FutureType futureType = FutureType.FUTURE;
 
     public String getContract() {
         return contract;
@@ -64,16 +63,16 @@ public class Tick {
         this.exPrice = exPrice;
     }
 
-    public void setPutOrCall(PutOrCall putOrCall) {
-        this.putOrCall = putOrCall;
+    public void setFutureType(FutureType futureType) {
+        this.futureType = futureType;
     }
 
     public int getExPrice() {
         return exPrice;
     }
 
-    public PutOrCall getPutOrCall() {
-        return putOrCall;
+    public FutureType getFutureType() {
+        return futureType;
     }
 
 //    public Topic getTopic(){
@@ -88,8 +87,8 @@ public class Tick {
                 append(contract).
                 append(price).
                 append(qty);
-        if (!putOrCall.equals(PutOrCall.NONE)){
-            builder.append(putOrCall).append(exPrice);
+        if (!futureType.equals(FutureType.FUTURE)){
+            builder.append(futureType).append(exPrice);
         }
         return builder.build();
     }

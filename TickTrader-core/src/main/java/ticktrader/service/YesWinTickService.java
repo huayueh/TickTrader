@@ -8,10 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ticktrader.dto.PutOrCall;
+import ticktrader.dto.FutureType;
 import ticktrader.dto.Tick;
 import ticktrader.dto.Topic;
-import ticktrader.recorder.PrintRecorder;
+import ticktrader.recorder.PrintPositionRecorder;
 import ticktrader.strategy.PrintStrategy;
 import ticktrader.strategy.Strategy;
 
@@ -78,14 +78,14 @@ public class YesWinTickService extends AbstractTickService {
             String symbol = item.substring(0, 3);
             String exPrice = item.substring(3, item.indexOf(".")-2);
             String pc = item.substring(item.indexOf(".")-2, item.indexOf("."));
-            PutOrCall putOrCall = "E5".equals(pc)?PutOrCall.PUT:PutOrCall.CALL;
+            FutureType futureType = "E5".equals(pc)? FutureType.PUT: FutureType.CALL;
 
             tick = new Tick();
             tick.setSymbol(symbol);
             tick.setExPrice(NumberUtils.toInt(exPrice));
             tick.setTime(LocalDateTime.now());
             tick.setPrice(NumberUtils.toDouble(ary[1]));
-            tick.setPutOrCall(putOrCall);
+            tick.setFutureType(futureType);
             tick.setContract("");
         }
 
@@ -95,7 +95,7 @@ public class YesWinTickService extends AbstractTickService {
     @Override
     public void addTopic(Topic topic) {
         super.addTopic(topic);
-        String pc = PutOrCall.PUT.equals(topic.getPutOrCall()) ? "Q5" : "E5";
+        String pc = FutureType.PUT.equals(topic.getFutureType()) ? "Q5" : "E5";
         String exPrice = (topic.getExPrice() < 10000)?"0"+topic.getExPrice():""+topic.getExPrice();
         String item = topic.getSymbol() + exPrice + pc + ".Price";
         try {
@@ -108,7 +108,7 @@ public class YesWinTickService extends AbstractTickService {
     @Override
     public void removeTopic(Topic topic) {
         super.removeTopic(topic);
-        String pc = PutOrCall.PUT.equals(topic.getPutOrCall()) ? "Q5" : "E5";
+        String pc = FutureType.PUT.equals(topic.getFutureType()) ? "Q5" : "E5";
         String exPrice = (topic.getExPrice() < 10000)?"0"+topic.getExPrice():""+topic.getExPrice();
         String item = topic.getSymbol() + exPrice + pc + ".Price";
         try {
@@ -119,14 +119,14 @@ public class YesWinTickService extends AbstractTickService {
     }
 
     public static void main(String arg[]) throws InterruptedException {
-        TickService tickService = new YesWinTickService(new PrintStrategy(new PrintRecorder()));
+        TickService tickService = new YesWinTickService(new PrintStrategy(new PrintPositionRecorder()));
         new Thread(tickService).start();
         TimeUnit.SECONDS.sleep(2);
-        tickService.addTopic(new Topic("TXO", "", 10000, PutOrCall.PUT));
-        tickService.addTopic(new Topic("TXO", "", 10000, PutOrCall.CALL));
-        tickService.addTopic(new Topic("TXO", "", 9900, PutOrCall.PUT));
-        tickService.addTopic(new Topic("TXO", "", 9900, PutOrCall.CALL));
-        tickService.addTopic(new Topic("TXO", "", 9800, PutOrCall.PUT));
-        tickService.addTopic(new Topic("TXO", "", 9800, PutOrCall.CALL));
+        tickService.addTopic(new Topic("TXO", "", 10000, FutureType.PUT));
+        tickService.addTopic(new Topic("TXO", "", 10000, FutureType.CALL));
+        tickService.addTopic(new Topic("TXO", "", 9900, FutureType.PUT));
+        tickService.addTopic(new Topic("TXO", "", 9900, FutureType.CALL));
+        tickService.addTopic(new Topic("TXO", "", 9800, FutureType.PUT));
+        tickService.addTopic(new Topic("TXO", "", 9800, FutureType.CALL));
     }
 }

@@ -16,7 +16,7 @@ public class Position {
     private final double qty;
     private final Side side;
     private final LocalDateTime openTime;
-    private final PutOrCall putOrCall;
+    private final FutureType futureType;
     private final int exPrice;
     private LocalDateTime closeTime;
     private double closePrice;
@@ -34,7 +34,7 @@ public class Position {
         this.price = builder.price;
         this.qty = builder.qty;
         this.openTime = builder.openTime;
-        this.putOrCall = builder.putOrCall;
+        this.futureType = builder.futureType;
         this.exPrice = builder.exPrice;
     }
 
@@ -77,8 +77,8 @@ public class Position {
                 append(side.name()).
                 append(closePrice).
                 append(closeTime);
-        if (!putOrCall.equals(PutOrCall.NONE)){
-            builder.append(putOrCall).append(exPrice);
+        if (!futureType.equals(FutureType.FUTURE)){
+            builder.append(futureType).append(exPrice);
         }
         return builder.build();
     }
@@ -99,7 +99,7 @@ public class Position {
         private double qty;
         private Side side;
         private LocalDateTime openTime;
-        private PutOrCall putOrCall = PutOrCall.NONE;
+        private FutureType futureType = FutureType.FUTURE;
         private int exPrice;
 
         public Builder exercisePrice(int exPrice) {
@@ -137,8 +137,8 @@ public class Position {
             return this;
         }
 
-        public Builder putOrCall(PutOrCall putOrCall) {
-            this.putOrCall = putOrCall;
+        public Builder putOrCall(FutureType futureType) {
+            this.futureType = futureType;
             return this;
         }
 

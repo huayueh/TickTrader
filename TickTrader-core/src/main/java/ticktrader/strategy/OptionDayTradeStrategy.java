@@ -1,7 +1,7 @@
 package ticktrader.strategy;
 
 import ticktrader.dto.Position;
-import ticktrader.dto.PutOrCall;
+import ticktrader.dto.FutureType;
 import ticktrader.dto.Tick;
 import ticktrader.recorder.Recorder;
 import ticktrader.service.FutureOpenPriceFinder;
@@ -20,9 +20,10 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
     private String contract;
     private boolean traded = false;
     private int exPrice;
-    private FutureOpenPriceFinder futureOpenPriceFinder = new FutureOpenPriceFinder("D:\\Tick\\Future_rpt");
+    //TODO: remove hard code
+    private FutureOpenPriceFinder futureOpenPriceFinder = new FutureOpenPriceFinder("E:\\Tick\\Future_rpt");
 
-    public OptionDayTradeStrategy(Recorder recorder) {
+    public OptionDayTradeStrategy(Recorder<Position> recorder) {
         super(recorder);
     }
 
@@ -48,7 +49,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
             }
         }
 
-        if (!tick.getContract().equals(contract) || !tick.getPutOrCall().equals(PutOrCall.CALL))
+        if (!tick.getContract().equals(contract) || !tick.getFutureType().equals(FutureType.CALL))
             return;
 
         if (tick.getExPrice() != exPrice)
@@ -65,7 +66,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
                     price(tick.getPrice()).
                     qty(1).
                     openTime(tick.getTime()).
-                    putOrCall(PutOrCall.CALL).
+                    putOrCall(FutureType.CALL).
                     exercisePrice(tick.getExPrice()).
                     build();
             placePosition(position);

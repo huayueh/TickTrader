@@ -18,13 +18,13 @@ public class Topic {
     private final String symbol;
     private final String contract;
     private final int exPrice;
-    private final PutOrCall putOrCall;
+    private final FutureType futureType;
 
-    public Topic(String symbol, String contract, int exPrice, PutOrCall putOrCall) {
+    public Topic(String symbol, String contract, int exPrice, FutureType futureType) {
         this.symbol = symbol;
         this.contract = contract;
         this.exPrice = exPrice;
-        this.putOrCall = putOrCall;
+        this.futureType = futureType;
     }
 
     public String getSymbol() {
@@ -39,16 +39,16 @@ public class Topic {
         return exPrice;
     }
 
-    public PutOrCall getPutOrCall() {
-        return putOrCall;
+    public FutureType getFutureType() {
+        return futureType;
     }
 
     public static Topic get(Tick tick) {
         String contract = contractProvider.closestContract(tick.getTime().toLocalDate());
         if (tick.getContract().equals(contract)){
-            return new Topic(tick.getSymbol(), CURRENT, tick.getExPrice(), tick.getPutOrCall());
+            return new Topic(tick.getSymbol(), CURRENT, tick.getExPrice(), tick.getFutureType());
         }
-        return new Topic(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getPutOrCall());
+        return new Topic(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getFutureType());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class Topic {
                 append(symbol).
                 append(contract).
                 append(exPrice).
-                append(putOrCall).
+                append(futureType).
                 toHashCode();
     }
 
@@ -73,7 +73,7 @@ public class Topic {
 
         Topic topic = (Topic) obj;
         EqualsBuilder builder = new EqualsBuilder().
-                append(putOrCall, topic.putOrCall);
+                append(futureType, topic.futureType);
 
         if (exPrice != ANY_PRICE && topic.exPrice != ANY_PRICE)
             builder.append(exPrice, topic.exPrice);

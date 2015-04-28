@@ -17,7 +17,7 @@ public class DayTradeStrategy extends AbstractStrategy {
     private String contract;
     private boolean traded = false;
 
-    public DayTradeStrategy(Recorder recorder) {
+    public DayTradeStrategy(Recorder<Position> recorder) {
         super(recorder);
     }
 
