@@ -2,6 +2,8 @@ package ticktrader.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import ticktrader.service.ContractProvider;
+import ticktrader.service.SettleContractProvider;
 
 /**
  * Author: huayueh
@@ -9,7 +11,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Topic {
     public static final String ANY = "ANY";
+    public static final String CURRENT = "CURRENT";
     public static final int ANY_PRICE = 0;
+    //TODO: DI
+    private static final ContractProvider contractProvider = SettleContractProvider.getInstance();
     private final String symbol;
     private final String contract;
     private final int exPrice;
@@ -38,6 +43,14 @@ public class Topic {
         return putOrCall;
     }
 
+    public static Topic get(Tick tick) {
+        String contract = contractProvider.closestContract(tick.getTime().toLocalDate());
+        if (tick.getContract().equals(contract)){
+            return new Topic(tick.getSymbol(), CURRENT, tick.getExPrice(), tick.getPutOrCall());
+        }
+        return new Topic(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getPutOrCall());
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
@@ -58,7 +71,7 @@ public class Topic {
         if (!(obj instanceof Topic))
             return false;
 
-        Topic topic = (Topic)obj;
+        Topic topic = (Topic) obj;
         EqualsBuilder builder = new EqualsBuilder().
                 append(putOrCall, topic.putOrCall);
 

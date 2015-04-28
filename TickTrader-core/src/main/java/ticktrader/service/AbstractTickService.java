@@ -24,7 +24,7 @@ public abstract class AbstractTickService extends Observable implements TickServ
     private static final Logger logger = LoggerFactory.getLogger(AbstractTickService.class);
     protected final Strategy strategy;
     protected String baseFolder;
-    private List<Topic> topics = new ArrayList<>();
+    protected List<Topic> topics = new ArrayList<>();
 
     public AbstractTickService(String baseFolder, Strategy ob) {
         this.baseFolder = baseFolder;
@@ -50,7 +50,7 @@ public abstract class AbstractTickService extends Observable implements TickServ
 
     @Override
     public void onTick(final Tick tick) {
-        if (topics.contains(tick.getTopic())) {
+        if (topics.contains(Topic.get(tick))) {
             logger.debug("{}", tick);
             setChanged();
             notifyObservers(tick);

@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
  * Author: huayueh
  * Date: 2015/4/16
  */
+//TODO: immutable
 public class Tick {
     private double price;
     private int qty;
@@ -75,9 +76,9 @@ public class Tick {
         return putOrCall;
     }
 
-    public Topic getTopic(){
-        return new Topic(symbol, contract, exPrice, putOrCall);
-    }
+//    public Topic getTopic(){
+//        return new Topic(symbol, contract, exPrice, putOrCall);
+//    }
 
     @Override
     public String toString() {

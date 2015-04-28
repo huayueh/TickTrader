@@ -37,6 +37,14 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
                 double price = fTick.get().getPrice();
                 exPrice = (int) (price / 100);
                 exPrice *= 100;
+
+//                int i = price % 100;
+//
+//                if (i > 50) {
+//                    return (price / 100) * 100 + 100;
+//                } else {
+//                    return (price / 100) * 100;
+//                }
             }
         }
 

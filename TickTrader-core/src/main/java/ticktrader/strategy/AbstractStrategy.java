@@ -11,7 +11,7 @@ import java.util.*;
  * Date: 2015/4/21
  */
 public abstract class AbstractStrategy implements Strategy {
-    private final Recorder recorder;
+    protected final Recorder recorder;
     protected Map<String, Queue<Position>> positions = new HashMap<>();
     protected double totalPnl = 0;
 
