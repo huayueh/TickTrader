@@ -29,9 +29,15 @@ public class FileTickRecorder implements Recorder<Tick> {
 
 
     @Override
-    public void record(Tick position) {
+    public void record(Tick tick) {
         try (BufferedWriter writer = Files.newBufferedWriter(tickPath, Charset.defaultCharset(), StandardOpenOption.APPEND)){
-            String s = position.toString();
+            StringBuffer sb = new StringBuffer();
+            sb.append(tick.getTime()).append(",");
+            sb.append(tick.getSymbol()).append(",");
+            sb.append(tick.getContract()).append(",");
+            sb.append(tick.getPrice()).append(",");
+            sb.append(tick.getQty());
+            String s = sb.toString();
             writer.write(s, 0, s.length());
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);

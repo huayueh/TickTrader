@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>TickTrader-core</artifactId>
+    <artifactId>core</artifactId>
 
     <properties>
         <mvn.javase.version>1.8</mvn.javase.version>
