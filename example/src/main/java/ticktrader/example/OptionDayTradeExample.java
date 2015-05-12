@@ -8,12 +8,14 @@ import ticktrader.service.TickService;
 import ticktrader.strategy.OptionDayTradeStrategy;
 import ticktrader.strategy.Strategy;
 
+import java.net.URISyntaxException;
+
 /**
  * Author: huayueh
  * Date: 2015/4/29
  */
 public class OptionDayTradeExample {
-    public static void main(String arg[]){
+    public static void main(String arg[]) throws URISyntaxException {
         Strategy strategy = new OptionDayTradeStrategy(new PrintPositionRecorder());
         TickService tickService = new OptionTickService("E:\\Tick\\Option_rpt\\2014", strategy);
         tickService.addTopic(new Topic("TXO", Topic.ANY, Topic.ANY_PRICE, FutureType.PUT));

@@ -32,11 +32,13 @@ public class FileTickRecorder implements Recorder<Tick> {
     public void record(Tick tick) {
         try (BufferedWriter writer = Files.newBufferedWriter(tickPath, Charset.defaultCharset(), StandardOpenOption.APPEND)){
             StringBuffer sb = new StringBuffer();
-            sb.append(tick.getTime()).append(",");
+            sb.append(tick.getTime().toLocalDate()).append(",");
+            sb.append(tick.getTime().toLocalTime()).append(",");
             sb.append(tick.getSymbol()).append(",");
             sb.append(tick.getContract()).append(",");
             sb.append(tick.getPrice()).append(",");
             sb.append(tick.getQty());
+            sb.append(System.lineSeparator());
             String s = sb.toString();
             writer.write(s, 0, s.length());
         } catch (IOException x) {

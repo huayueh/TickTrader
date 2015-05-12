@@ -1,12 +1,15 @@
 package ticktrader.strategy;
 
-import ticktrader.dto.Position;
 import ticktrader.dto.FutureType;
+import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.recorder.Recorder;
 import ticktrader.service.FutureOpenPriceFinder;
 import ticktrader.service.SettleContractProvider;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -20,11 +23,13 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
     private String contract;
     private boolean traded = false;
     private int exPrice;
-    //TODO: remove hard code
-    private FutureOpenPriceFinder futureOpenPriceFinder = new FutureOpenPriceFinder("E:\\Tick\\Future_rpt");
+    private FutureOpenPriceFinder futureOpenPriceFinder;
 
-    public OptionDayTradeStrategy(Recorder<Position> recorder) {
+    public OptionDayTradeStrategy(Recorder<Position> recorder) throws URISyntaxException {
         super(recorder);
+        //TODO: remove hard code
+        URI uri = getClass().getResource("/2014_open_tick.csv").toURI();
+        futureOpenPriceFinder = new FutureOpenPriceFinder(Paths.get(uri));
     }
 
     @Override
@@ -32,7 +37,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
         if (date == null || !tick.getTime().toLocalDate().equals(date)) {
             date = tick.getTime().toLocalDate();
             contract = SettleContractProvider.getInstance().closestContract(date);
-            Optional<Tick> fTick = futureOpenPriceFinder.find(date, "TX", contract);
+            Optional<Tick> fTick = futureOpenPriceFinder.find(date, "TX");
 
             if (fTick.isPresent()){
                 double price = fTick.get().getPrice();
