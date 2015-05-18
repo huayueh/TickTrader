@@ -12,12 +12,12 @@ import java.time.LocalTime;
  * Author: huayueh
  * Date: 2015/4/22
  */
-public class DayTradeStrategy extends AbstractStrategy {
+public class FutureDayTradeStrategy extends AbstractStrategy {
     private LocalDate date;
     private String contract;
     private boolean traded = false;
 
-    public DayTradeStrategy(Recorder<Position> recorder) {
+    public FutureDayTradeStrategy(Recorder<Position> recorder) {
         super(recorder);
     }
 
