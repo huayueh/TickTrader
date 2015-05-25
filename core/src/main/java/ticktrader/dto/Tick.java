@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Author: huayueh
@@ -82,7 +83,7 @@ public class Tick {
     @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
-                append(localDateTime).
+                append(localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)).
                 append(symbol).
                 append(contract).
                 append(price).

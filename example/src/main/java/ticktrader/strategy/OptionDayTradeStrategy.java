@@ -4,7 +4,7 @@ import ticktrader.dto.FutureType;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.recorder.Recorder;
-import ticktrader.service.FutureOpenPriceFinder;
+import ticktrader.service.FuturePriceFinder;
 import ticktrader.service.SettleContractProvider;
 
 import java.net.URI;
@@ -23,38 +23,49 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
     private String contract;
     private boolean traded = false;
     private int exPrice;
-    private FutureOpenPriceFinder futureOpenPriceFinder;
+    private FutureType type = FutureType.CALL;
+    private FuturePriceFinder futurePriceFinder;
 
     public OptionDayTradeStrategy(Recorder<Position> recorder) throws URISyntaxException {
         super(recorder);
-        //TODO: remove hard code
-        URI uri = getClass().getResource("/2014_open_tick.csv").toURI();
-        futureOpenPriceFinder = new FutureOpenPriceFinder(Paths.get(uri));
+        URI uriOpen = getClass().getResource("/2014_open_tick.csv").toURI();
+        URI uriClose = getClass().getResource("/2014_last_tick.csv").toURI();
+        futurePriceFinder = new FuturePriceFinder(Paths.get(uriOpen), Paths.get(uriClose));
+    }
+
+    private int roundUpExPrice(double price){
+        int i = (int) (price % 100);
+        if (i > 50) {
+            return ((int)(price / 100) * 100 + 100);
+        } else {
+            return ((int)(price / 100) * 100);
+        }
     }
 
     @Override
     public void onTick(Tick tick) {
         if (date == null || !tick.getTime().toLocalDate().equals(date)) {
+            Optional<Tick> closeTick = futurePriceFinder.find(date, "TX", FuturePriceFinder.Type.CLOSE);
             date = tick.getTime().toLocalDate();
             contract = SettleContractProvider.getInstance().closestContract(date);
-            Optional<Tick> fTick = futureOpenPriceFinder.find(date, "TX");
+            Optional<Tick> openTick = futurePriceFinder.find(date, "TX", FuturePriceFinder.Type.OPEN);
 
-            if (fTick.isPresent()){
-                double price = fTick.get().getPrice();
-                exPrice = (int) (price / 100);
-                exPrice *= 100;
+            if (openTick.isPresent()){
+                double price = openTick.get().getPrice();
+                exPrice = roundUpExPrice(price);
 
-//                int i = price % 100;
-//
-//                if (i > 50) {
-//                    return (price / 100) * 100 + 100;
-//                } else {
-//                    return (price / 100) * 100;
-//                }
+                if (closeTick.isPresent()){
+                    // go up at open
+                    if (openTick.get().getPrice() > closeTick.get().getPrice()){
+                        type = FutureType.CALL;
+                    } else {// go down at open
+                        type = FutureType.PUT;
+                    }
+                }
             }
         }
 
-        if (!tick.getContract().equals(contract) || !tick.getFutureType().equals(FutureType.CALL))
+        if (!tick.getContract().equals(contract) || !tick.getFutureType().equals(type))
             return;
 
         if (tick.getExPrice() != exPrice)
@@ -71,7 +82,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
                     price(tick.getPrice()).
                     qty(1).
                     openTime(tick.getTime()).
-                    putOrCall(FutureType.CALL).
+                    putOrCall(type).
                     exercisePrice(tick.getExPrice()).
                     build();
             placePosition(position);

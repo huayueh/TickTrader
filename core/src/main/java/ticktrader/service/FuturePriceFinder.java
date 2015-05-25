@@ -23,8 +23,14 @@ import java.util.stream.Stream;
  * Author: huayueh
  * Date: 2015/4/27
  */
-public class FutureOpenPriceFinder {
-    private Map<Key, Tick> map = new ConcurrentHashMap<>();
+public class FuturePriceFinder {
+    private Map<Key, Tick> openMap = new ConcurrentHashMap<>();
+    private Map<Key, Tick> closeMap = new ConcurrentHashMap<>();
+
+    public enum Type{
+        OPEN,
+        CLOSE
+    }
 
     private class Key {
         private final LocalDate date;
@@ -61,34 +67,55 @@ public class FutureOpenPriceFinder {
         }
     }
 
-    public FutureOpenPriceFinder(Path path) {
-        try (Stream<String> stream = Files.lines(path, Charset.defaultCharset())) {
+    public FuturePriceFinder(Path openPath, Path closePath) {
+        // open tick file
+        try (Stream<String> stream = Files.lines(openPath, Charset.defaultCharset())) {
             stream.map(line -> wrapTick(line)).
                     filter(tick -> tick != null).
-                    forEach(t -> map.put(new Key(t.getTime().toLocalDate(), t.getSymbol()), t));
+                    forEach(t -> openMap.put(new Key(t.getTime().toLocalDate(), t.getSymbol()), t));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // close tick file
+        try (Stream<String> stream = Files.lines(closePath, Charset.defaultCharset())) {
+            stream.map(line -> wrapTick(line)).
+                    filter(tick -> tick != null).
+                    forEach(t -> closeMap.put(new Key(t.getTime().toLocalDate(), t.getSymbol()), t));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //TODO: collect this to file
-    public Optional<Tick> find(LocalDate date, String symbol) {
-        return Optional.of(map.get(new Key(date, symbol)));
+    public Optional<Tick> find(LocalDate date, String symbol, Type type) {
+        Optional<Tick> ret = Optional.empty();
+        if (date == null || symbol == null)
+            return ret;
+        switch (type){
+            case OPEN:
+                ret = Optional.of(openMap.get(new Key(date, symbol)));
+                break;
+            case CLOSE:
+                ret = Optional.of(closeMap.get(new Key(date, symbol)));
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 
     private Tick wrapTick(String line) {
         Tick tick = null;
 
         String[] ary = StringUtils.split(line, ",");
-        //2014-01-02,08:45,TX,201401,8644.0,662
-        if (ary.length > 5) {
-            String date = ary[0].trim();
-            String time = ary[1].trim();
-            String symbol = ary[2].trim();
-            String contract = ary[3].trim();
-            String price = ary[4].trim();
-            String qty = ary[5].trim();
-            LocalDateTime ltime = LocalDateTime.parse(date + time, DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm"));
+        //2014-01-02T13:44:59,TX,201401,8618.0,2
+        if (ary.length > 4) {
+            String time = ary[0].trim();
+            String symbol = ary[1].trim();
+            String contract = ary[2].trim();
+            String price = ary[3].trim();
+            String qty = ary[4].trim();
+            LocalDateTime ltime = LocalDateTime.parse(time, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
             tick = new Tick();
             tick.setTime(ltime);

@@ -66,6 +66,26 @@ public class Position {
         return qty;
     }
 
+    public LocalDateTime getOpenTime() {
+        return openTime;
+    }
+
+    public double getClosePrice() {
+        return closePrice;
+    }
+
+    public LocalDateTime getCloseTime() {
+        return closeTime;
+    }
+
+    public FutureType getFutureType() {
+        return futureType;
+    }
+
+    public int getExPrice() {
+        return exPrice;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder builder =  new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
