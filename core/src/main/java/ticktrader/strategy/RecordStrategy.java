@@ -1,6 +1,7 @@
 package ticktrader.strategy;
 
 import ticktrader.dto.Tick;
+import ticktrader.provider.ContractProvider;
 import ticktrader.recorder.Recorder;
 
 /**
@@ -16,5 +17,10 @@ public class RecordStrategy extends AbstractStrategy {
     @Override
     public void onTick(Tick tick) {
         recorder.record(tick);
+    }
+
+    @Override
+    public void onFirstTick(Tick tick) {
+
     }
 }

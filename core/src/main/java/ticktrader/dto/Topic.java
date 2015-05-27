@@ -2,8 +2,8 @@ package ticktrader.dto;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import ticktrader.service.ContractProvider;
-import ticktrader.service.SettleContractProvider;
+import ticktrader.provider.ContractProvider;
+import ticktrader.provider.SettleContractProvider;
 
 /**
  * Author: huayueh

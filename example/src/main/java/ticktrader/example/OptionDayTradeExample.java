@@ -2,8 +2,8 @@ package ticktrader.example;
 
 import ticktrader.dto.FutureType;
 import ticktrader.dto.Topic;
+import ticktrader.provider.DaysFarContractProvider;
 import ticktrader.recorder.ComposePositionRecorder;
-import ticktrader.recorder.PrintPositionRecorder;
 import ticktrader.service.OptionTickService;
 import ticktrader.service.TickService;
 import ticktrader.strategy.OptionDayTradeStrategy;
@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
  */
 public class OptionDayTradeExample {
     public static void main(String arg[]) throws URISyntaxException {
-        Strategy strategy = new OptionDayTradeStrategy(new ComposePositionRecorder());
+        Strategy strategy = new OptionDayTradeStrategy(new ComposePositionRecorder(), new DaysFarContractProvider(10));
         TickService tickService = new OptionTickService("E:\\Tick\\Option_rpt\\2014", strategy);
         tickService.addTopic(new Topic("TXO", Topic.ANY, Topic.ANY_PRICE, FutureType.PUT));
         tickService.addTopic(new Topic("TXO", Topic.ANY, Topic.ANY_PRICE, FutureType.CALL));

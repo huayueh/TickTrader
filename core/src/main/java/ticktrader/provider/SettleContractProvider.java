@@ -1,4 +1,4 @@
-package ticktrader.service;
+package ticktrader.provider;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -8,6 +8,7 @@ import ticktrader.dto.Settle;
 
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -57,9 +58,13 @@ public class SettleContractProvider implements ContractProvider {
         return instance;
     }
 
+    public LocalDate closestDate(LocalDate day){
+        return his.ceilingKey(day);
+    }
+
     @Override
     public String closestContract(LocalDate time) {
-        LocalDate key = his.ceilingKey(time);
+        LocalDate key = closestDate(time);
         Settle settle = his.get(key);
         return settle.getContract();
     }

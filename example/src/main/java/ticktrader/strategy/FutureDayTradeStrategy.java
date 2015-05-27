@@ -2,8 +2,9 @@ package ticktrader.strategy;
 
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
+import ticktrader.provider.ContractProvider;
 import ticktrader.recorder.Recorder;
-import ticktrader.service.SettleContractProvider;
+import ticktrader.provider.SettleContractProvider;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,26 +16,31 @@ import java.time.LocalTime;
 public class FutureDayTradeStrategy extends AbstractStrategy {
     private LocalDate date;
     private String contract;
-    private boolean traded = false;
+    private String symbol = "MTX";
 
-    public FutureDayTradeStrategy(Recorder<Position> recorder) {
-        super(recorder);
+    public FutureDayTradeStrategy(Recorder recorder, ContractProvider contractProvider) {
+        super(recorder, contractProvider);
+    }
+
+
+    @Override
+    public void onFirstTick(Tick tick) {
+        assert (contractProvider != null) : "contractProvider is expected.";
+        date = tick.getTime().toLocalDate();
+        contract = contractProvider.closestContract(date);
     }
 
     @Override
     public void onTick(Tick tick) {
-        if (date == null || !tick.getTime().toLocalDate().equals(date)) {
-            date = tick.getTime().toLocalDate();
-            contract = SettleContractProvider.getInstance().closestContract(date);
-        }
-
-        if (!"MTX".equals(tick.getSymbol()) || !tick.getContract().equals(contract))
+        // filter
+        if (!symbol.equals(tick.getSymbol()) || !tick.getContract().equals(contract))
             return;
 
+        // right tick for strategy
         LocalTime tickTime = tick.getTime().toLocalTime();
 
         //TODO: position qty
-        if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && !traded) {
+        if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
             Position position = new Position.Builder().
                     symbol(tick.getSymbol()).
                     contract(tick.getContract()).
@@ -44,14 +50,12 @@ public class FutureDayTradeStrategy extends AbstractStrategy {
                     openTime(tick.getTime()).
                     build();
             placePosition(position);
-            traded = true;
         }
 
         //TODO: settle partial qty
-        //TODO: settle recorder to storage
-        if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && traded) {
+        if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions() != 0) {
             settleAllPosition(tick);
-            traded = false;
         }
     }
+
 }

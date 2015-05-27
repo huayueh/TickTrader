@@ -2,8 +2,10 @@ package ticktrader.strategy;
 
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
+import ticktrader.provider.ContractProvider;
 import ticktrader.recorder.Recorder;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -12,22 +14,55 @@ import java.util.*;
  */
 public abstract class AbstractStrategy implements Strategy {
     protected final Recorder recorder;
-    protected Map<String, Queue<Position>> positions = new HashMap<>();
+    protected ContractProvider contractProvider;
     protected double totalPnl = 0;
+    protected LocalDate date;
+    private Map<String, Queue<Position>> positions = new HashMap<>();
+    private Set<LocalDate> tradedDate = new HashSet<>();
 
-    public AbstractStrategy(Recorder recorder){
+    public AbstractStrategy(Recorder recorder, ContractProvider contractProvider){
+        this.recorder = recorder;
+        this.contractProvider = contractProvider;
+    }
+
+    public AbstractStrategy(Recorder recorder) {
         this.recorder = recorder;
     }
 
     @Override
     public void update(Observable o, Object arg) {
         if (arg.getClass().isAssignableFrom(Tick.class)) {
-            cntPnl((Tick) arg);
-            onTick((Tick) arg);
+            Tick tick = (Tick) arg;
+            cntPnl(tick);
+            if (date == null || !tick.getTime().toLocalDate().equals(date)) {
+                onFirstTick(tick);
+                date = tick.getTime().toLocalDate();
+            }
+            onTick(tick);
         }
     }
 
+    protected int positions(String symbol, String contract){
+        Queue<Position> posQueue = positions.get(symbol + contract);
+        if (posQueue != null)
+            return posQueue.size();
+        return 0;
+    }
+
+    protected int positions(){
+        int cnt = 0;
+        for(Map.Entry<String, Queue<Position>> entry : positions.entrySet()) {
+            cnt += entry.getValue().size();
+        }
+        return cnt;
+    }
+
+    protected boolean tradedToday(){
+        return tradedDate.contains(date);
+    }
+
     protected void placePosition(Position position) {
+        tradedDate.add(date);
         Queue<Position> posQueue = positions.get(position.getSymbol() + position.getContract());
         if (posQueue == null) {
             posQueue = new LinkedList<>();
@@ -44,6 +79,7 @@ public abstract class AbstractStrategy implements Strategy {
             totalPnl += position.getPnl();
             recorder.record(position);
         }
+        positions.clear();
     }
 
     protected void cntPnl(Tick tick) {

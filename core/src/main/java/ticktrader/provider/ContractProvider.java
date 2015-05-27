@@ -1,4 +1,4 @@
-package ticktrader.service;
+package ticktrader.provider;
 
 import java.time.LocalDate;
 
