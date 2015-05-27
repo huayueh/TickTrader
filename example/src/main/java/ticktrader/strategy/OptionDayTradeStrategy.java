@@ -44,10 +44,8 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
     @Override
     public void onFirstTick(Tick tick) {
         assert (contractProvider != null) : "contractProvider is expected.";
-        LocalDate date = tick.getTime().toLocalDate();
-        Optional<Tick> closeTick = futurePriceFinder.find(date, "TX", FuturePriceFinder.Type.CLOSE);
-        date = tick.getTime().toLocalDate();
-        contract = SettleContractProvider.getInstance().closestContract(date);
+        Optional<Tick> closeTick = futurePriceFinder.find(lastTradedate, "TX", FuturePriceFinder.Type.CLOSE);
+        contract = contractProvider.closestContract(date);
         Optional<Tick> openTick = futurePriceFinder.find(date, "TX", FuturePriceFinder.Type.OPEN);
 
         if (openTick.isPresent()){
@@ -78,7 +76,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
         LocalTime tickTime = tick.getTime().toLocalTime();
 
         //TODO: position qty
-        if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
+        if (tickTime.isAfter(LocalTime.of(8, 44, 59)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
             Position position = new Position.Builder().
                     symbol(tick.getSymbol()).
                     contract(tick.getContract()).

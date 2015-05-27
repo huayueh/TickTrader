@@ -17,6 +17,7 @@ public abstract class AbstractStrategy implements Strategy {
     protected ContractProvider contractProvider;
     protected double totalPnl = 0;
     protected LocalDate date;
+    protected LocalDate lastTradedate;
     private Map<String, Queue<Position>> positions = new HashMap<>();
     private Set<LocalDate> tradedDate = new HashSet<>();
 
@@ -35,8 +36,9 @@ public abstract class AbstractStrategy implements Strategy {
             Tick tick = (Tick) arg;
             cntPnl(tick);
             if (date == null || !tick.getTime().toLocalDate().equals(date)) {
-                onFirstTick(tick);
+                lastTradedate = date;
                 date = tick.getTime().toLocalDate();
+                onFirstTick(tick);
             }
             onTick(tick);
         }
