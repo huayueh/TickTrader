@@ -55,9 +55,9 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
             if (closeTick.isPresent()){
                 // go up at open
                 if (openTick.get().getPrice() > closeTick.get().getPrice()){
-                    type = FutureType.CALL;
-                } else {// go down at open
                     type = FutureType.PUT;
+                } else {// go down at open
+                    type = FutureType.CALL;
                 }
             }
         }
@@ -75,7 +75,6 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
         // right tick for strategy
         LocalTime tickTime = tick.getTime().toLocalTime();
 
-        //TODO: position qty
         if (tickTime.isAfter(LocalTime.of(8, 44, 59)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
             Position position = new Position.Builder().
                     symbol(tick.getSymbol()).
@@ -90,7 +89,6 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
             placePosition(position);
         }
 
-        //TODO: settle partial qty
         if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions()!=0 && tick.getExPrice() == exPrice) {
             settleAllPosition(tick);
         }

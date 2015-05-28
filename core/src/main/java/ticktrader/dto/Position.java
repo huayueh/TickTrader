@@ -21,6 +21,7 @@ public class Position {
     private LocalDateTime closeTime;
     private double closePrice;
     private double pnl;
+    private double netPnl;
 
     public enum Side {
         Buy,
@@ -60,6 +61,14 @@ public class Position {
 
     public void setPnl(double pnl) {
         this.pnl = pnl;
+    }
+
+    public double getNetPnl() {
+        return netPnl;
+    }
+
+    public void setNetPnl(double pnl) {
+        this.netPnl = pnl;
     }
 
     public double getQty() {

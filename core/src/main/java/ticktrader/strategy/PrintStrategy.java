@@ -21,9 +21,4 @@ public class PrintStrategy extends AbstractStrategy {
     public void onFirstTick(Tick tick) {
 
     }
-
-    @Override
-    public double getPnl() {
-        return 0;
-    }
 }

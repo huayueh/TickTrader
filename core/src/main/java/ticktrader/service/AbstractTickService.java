@@ -75,7 +75,7 @@ public abstract class AbstractTickService extends Observable implements TickServ
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Total pnl : " + strategy.getPnl());
+        strategy.done();
     }
 
     protected abstract Tick wrapTick(String line);

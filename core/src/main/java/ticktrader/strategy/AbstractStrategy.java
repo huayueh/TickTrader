@@ -15,11 +15,12 @@ import java.util.*;
 public abstract class AbstractStrategy implements Strategy {
     protected final Recorder recorder;
     protected ContractProvider contractProvider;
-    protected double totalPnl = 0;
+    protected double curPnl = 0;
     protected LocalDate date;
     protected LocalDate lastTradedate;
     private Map<String, Queue<Position>> positions = new HashMap<>();
     private Set<LocalDate> tradedDate = new HashSet<>();
+    private int cost = 3;
 
     public AbstractStrategy(Recorder recorder, ContractProvider contractProvider){
         this.recorder = recorder;
@@ -78,7 +79,7 @@ public abstract class AbstractStrategy implements Strategy {
         while (posQueue != null && !posQueue.isEmpty()) {
             Position position = posQueue.poll();
             position.fillAllQuantity(tick.getPrice(), tick.getTime());
-            totalPnl += position.getPnl();
+            curPnl = 0;
             recorder.record(position);
         }
         positions.clear();
@@ -93,17 +94,23 @@ public abstract class AbstractStrategy implements Strategy {
 
         for (Position pos : queue) {
             // concept: over 0 profit
+            double pnl;
             if (pos.getSide() == Position.Side.Buy) {
-                pos.setPnl((tick.getPrice() - pos.getPrice()) * pos.getQty());
+                pnl = (tick.getPrice() - pos.getPrice()) * pos.getQty();
             } else {
-                pos.setPnl((pos.getPrice() - tick.getPrice()) * pos.getQty());
+                pnl = (pos.getPrice() - tick.getPrice()) * pos.getQty();
             }
+            curPnl += pnl;
+            pos.setPnl(pnl - cost);
+            pos.setNetPnl(pnl);
         }
         onTick(tick);
     }
 
     @Override
-    public double getPnl() {
-        return totalPnl;
+    public void done() {
+        recorder.done();
     }
+
+    //TODO: partial settle
 }

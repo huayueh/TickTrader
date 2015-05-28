@@ -6,4 +6,6 @@ package ticktrader.recorder;
  */
 public interface Recorder<T> {
     void record(T t);
+
+    void done();
 }

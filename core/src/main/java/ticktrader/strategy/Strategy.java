@@ -11,5 +11,5 @@ import java.util.Observer;
 public interface Strategy extends Observer {
     void onTick(Tick tick);
     void onFirstTick(Tick tick);
-    double getPnl();
+    void done();
 }

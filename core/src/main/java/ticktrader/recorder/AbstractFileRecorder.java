@@ -32,4 +32,9 @@ public abstract class AbstractFileRecorder<T> implements Recorder<T> {
             System.err.format("IOException: %s%n", x);
         }
     }
+
+    @Override
+    public void done() {
+
+    }
 }

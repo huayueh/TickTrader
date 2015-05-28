@@ -39,7 +39,6 @@ public class FutureDayTradeStrategy extends AbstractStrategy {
         // right tick for strategy
         LocalTime tickTime = tick.getTime().toLocalTime();
 
-        //TODO: position qty
         if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
             Position position = new Position.Builder().
                     symbol(tick.getSymbol()).
@@ -52,7 +51,6 @@ public class FutureDayTradeStrategy extends AbstractStrategy {
             placePosition(position);
         }
 
-        //TODO: settle partial qty
         if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions() != 0) {
             settleAllPosition(tick);
         }

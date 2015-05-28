@@ -12,4 +12,9 @@ public class PrintTickRecorder implements Recorder<Tick> {
     public void record(Tick tick) {
         System.out.println(tick);
     }
+
+    @Override
+    public void done() {
+
+    }
 }

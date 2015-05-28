@@ -15,7 +15,7 @@ public class FilePositionRecorder extends AbstractFileRecorder<Position> {
 
     public FilePositionRecorder(Path path) {
         super(path);
-        write("Symbol,Contract,Open Time,Open Price,Qty,Side,Close Price,Close Time,Future Type, ExPrice,PNL");
+        write("Symbol,Contract,Open Time,Open Price,Qty,Side,Close Price,Close Time,Future Type, ExPrice,Net PNL, PNL");
         write(System.lineSeparator());
     }
 
@@ -32,6 +32,7 @@ public class FilePositionRecorder extends AbstractFileRecorder<Position> {
                 append(position.getCloseTime()).
                 append(position.getFutureType()).
                 append(position.getExPrice()).
+                append(position.getNetPnl()).
                 append(position.getPnl());
         builder.append(System.lineSeparator());
         write(builder.build());
