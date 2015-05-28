@@ -13,11 +13,11 @@
     </Appenders>
 
     <Loggers>
-        <logger name="ticktrader.service" level="ERROR" additivity="false">
+        <logger name="ticktrader.strategy" level="DEBUG" additivity="false">
             <appender-ref ref="Console"/>
-            <appender-ref ref="File"/>
         </logger>
-        <Root level="DEBUG">
+
+        <Root level="ERROR">
             <appender-ref ref="Console"/>
             <appender-ref ref="File"/>
         </Root>

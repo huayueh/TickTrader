@@ -1,7 +1,5 @@
 package ticktrader.provider;
 
-import ticktrader.dto.Settle;
-
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -19,7 +17,6 @@ public class DaysFarContractProvider implements ContractProvider {
 
     @Override
     public String closestContract(LocalDate time) {
-        Settle settle;
         LocalDate ceilingkey = settleContractProvider.closestDate(time);
         LocalDate nextCeilingKey = settleContractProvider.closestDate(ceilingkey.plusDays(1));
         long days = Period.between(time, ceilingkey).getDays();

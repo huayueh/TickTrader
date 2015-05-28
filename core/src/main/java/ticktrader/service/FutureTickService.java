@@ -38,9 +38,17 @@ public class FutureTickService extends AbstractTickService {
             tick = new Tick();
             tick.setTime(ltime);
             tick.setPrice(NumberUtils.toDouble(price));
+
+            // FIMTX 2007, MTF 2008
             if (symbol.equals("FIMTX") || symbol.equals("MXF")) {
                 symbol = "MTX";
             }
+
+            // FITX 2007, TXF 2008
+            if (symbol.equals("FITX") || symbol.equals("TXF")) {
+                symbol = "TX";
+            }
+
             tick.setSymbol(symbol);
             tick.setContract(contract);
             tick.setQty(NumberUtils.toInt(qty));

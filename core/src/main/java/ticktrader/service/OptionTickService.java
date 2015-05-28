@@ -26,7 +26,8 @@ public class OptionTickService extends AbstractTickService {
         String[] ary = StringUtils.split(line, ",");
         String date = ary[0].trim();
         //交易日期,商品代號,履約價格,到期月份(週別),買賣權別,成交時間,成交價格,成交數量(B or S),開盤集合競價
-        if (ary.length > 8 && NumberUtils.isDigits(date)) {
+        //交易日期,商品代號,履約價格,到期月份(週別),買賣權別,成交時間,成交價格,成交數量(B or S)
+        if (ary.length >= 8 && NumberUtils.isDigits(date)) {
             String symbol = ary[1].trim();
             String exPrice = ary[2].trim();
             String contract = ary[3].trim();

@@ -65,6 +65,9 @@ public class SettleContractProvider implements ContractProvider {
     @Override
     public String closestContract(LocalDate time) {
         LocalDate key = closestDate(time);
+        if (key.equals(time)){
+            key = closestDate(time.plusDays(1));
+        }
         Settle settle = his.get(key);
         return settle.getContract();
     }

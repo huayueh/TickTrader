@@ -93,10 +93,10 @@ public class FuturePriceFinder {
             return ret;
         switch (type){
             case OPEN:
-                ret = Optional.of(openMap.get(new Key(date, symbol)));
+                ret = Optional.ofNullable(openMap.get(new Key(date, symbol)));
                 break;
             case CLOSE:
-                ret = Optional.of(closeMap.get(new Key(date, symbol)));
+                ret = Optional.ofNullable(closeMap.get(new Key(date, symbol)));
                 break;
             default:
                 break;
