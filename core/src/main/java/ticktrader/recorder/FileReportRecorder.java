@@ -34,8 +34,8 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
         cnt++;
         if (position.getPnl() > 0){
             winCnt++;
-            winningRate = winCnt / cnt;
         }
+        winningRate = (double)winCnt / cnt;
 
         if (maxWin != null){
             if (position.getPnl() > maxWin.getPnl())

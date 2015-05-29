@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class OptionTickService extends AbstractTickService {
 
-    public OptionTickService(String baseFolder, Strategy strategy) {
-        super(baseFolder, strategy);
+    public OptionTickService(String baseFolder, int year, Strategy ob) {
+        super(baseFolder, year, ob);
     }
 
     @Override

@@ -21,13 +21,17 @@ import java.util.List;
  */
 public class OptionDayTradeExample {
     public static void main(String arg[]) throws URISyntaxException {
+        //Recorder
         List<Recorder<Position>> recorders = new ArrayList<>();
         recorders.add(new PrintPositionRecorder());
         recorders.add(new FilePositionRecorder(Paths.get("E:", "positions.csv")));
         recorders.add(new FileReportRecorder(Paths.get("E:", "report.txt")));
         Recorder<Position> recorder = new ComposePositionRecorder(recorders);
-        Strategy strategy = new OptionDayTradeStrategy(recorder, new DaysFarContractProvider(10));
-        TickService tickService = new OptionTickService("E:\\Tick\\Option_rpt\\2014", strategy);
+
+        //strategy
+        int year =  2014;
+        Strategy strategy = new OptionDayTradeStrategy(recorder, new DaysFarContractProvider(10), year);
+        TickService tickService = new OptionTickService("E:/Tick/Option_rpt/", year, strategy);
         tickService.addTopic(new Topic("TXO", Topic.ANY, Topic.ANY_PRICE, FutureType.PUT));
         tickService.addTopic(new Topic("TXO", Topic.ANY, Topic.ANY_PRICE, FutureType.CALL));
 

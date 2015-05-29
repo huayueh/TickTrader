@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class FutureTickService extends AbstractTickService {
 
-    public FutureTickService(String baseFolder, Strategy strategy) {
-        super(baseFolder, strategy);
+    public FutureTickService(String baseFolder, int year, Strategy ob) {
+        super(baseFolder, year, ob);
     }
 
     @Override

@@ -17,9 +17,10 @@ import java.net.URISyntaxException;
  */
 public class FutureDayTradeExample {
     public static void main(String arg[]) throws URISyntaxException {
+        int year = 0;
         Strategy strategy = new FutureDayTradeStrategy(new PrintPositionRecorder(), SettleContractProvider.getInstance());
-        TickService tickService = new FutureTickService("E:\\Tick\\Future_rpt\\2014", strategy);
-        tickService.addTopic(new Topic("MTX", Topic.ANY, Topic.ANY_PRICE, FutureType.FUTURE));
+        TickService tickService = new FutureTickService("E:/Tick/Future_rpt/", year, strategy);
+        tickService.addTopic(new Topic("TX", Topic.ANY, Topic.ANY_PRICE, FutureType.FUTURE));
 
         Thread mkt = new Thread(tickService);
         mkt.setName("TickService");

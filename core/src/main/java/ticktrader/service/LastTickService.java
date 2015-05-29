@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -18,29 +17,21 @@ import java.util.stream.Stream;
  */
 public class LastTickService extends FutureTickService {
 
-    public LastTickService(String baseFolder, Strategy strategy) {
-        super(baseFolder, strategy);
+    public LastTickService(String baseFolder, int year, Strategy ob) {
+        super(baseFolder, year, ob);
     }
 
     @Override
-    public void run() {
-        Path path = Paths.get(baseFolder);
-        try {
-            Files.list(path)
-                    .forEach(p -> {
-                        try (Stream<String> stream = Files.lines(p, Charset.defaultCharset())) {
-                            Optional<Tick> opTick = stream.map(line -> wrapTick(line)).
-                                    filter(tick -> {
-                                        if (tick != null) {
-                                            return topics.contains(Topic.get(tick));
-                                        }
-                                        return false;
-                                    }).reduce((previous, current) -> current);
-                            onTick(opTick.get());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+    protected void fileConsumer(Path path){
+        try (Stream<String> stream = Files.lines(path, Charset.defaultCharset())) {
+            Optional<Tick> opTick = stream.map(line -> wrapTick(line)).
+                    filter(tick -> {
+                        if (tick != null) {
+                            return topics.contains(Topic.get(tick));
                         }
-                    });
+                        return false;
+                    }).reduce((previous, current) -> current);
+            onTick(opTick.get());
         } catch (IOException e) {
             e.printStackTrace();
         }

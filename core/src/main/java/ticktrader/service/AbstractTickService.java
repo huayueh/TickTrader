@@ -23,11 +23,14 @@ import java.util.stream.Stream;
 public abstract class AbstractTickService extends Observable implements TickService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractTickService.class);
     protected final Strategy strategy;
-    protected String baseFolder;
     protected List<Topic> topics = new ArrayList<>();
+    private Path path;
+    private int year;
 
-    public AbstractTickService(String baseFolder, Strategy ob) {
-        this.baseFolder = baseFolder;
+    public AbstractTickService(String baseFolder, int year, Strategy ob) {
+        //specify year or all files
+        this.path = (year > 0) ? Paths.get(baseFolder + year) : Paths.get(baseFolder);
+        this.year = year;
         this.strategy = ob;
         this.addObserver(ob);
     }
@@ -59,23 +62,32 @@ public abstract class AbstractTickService extends Observable implements TickServ
 
     @Override
     public void run() {
-        Path path = Paths.get(baseFolder);
         try {
-            Files.list(path)
-                    .parallel()
-                    .forEach(p -> {
-                        try (Stream<String> stream = Files.lines(p, Charset.defaultCharset())) {
-                            stream.map(line -> wrapTick(line)).
-                                    filter(tick -> tick != null).
-                                    forEach(tick -> onTick(tick));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            Files.list(path).forEach(pOrf -> {
+                if (year > 0) {
+                    fileConsumer(pOrf);
+                } else {
+                    try {
+                        Files.list(pOrf).forEach(p -> fileConsumer(p));
+                    } catch (IOException e) {
+                        logger.error("", e);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            logger.error("", e);
+        }
+        strategy.done();
+    }
+
+    protected void fileConsumer(Path path){
+        try (Stream<String> stream = Files.lines(path, Charset.defaultCharset())) {
+            stream.map(line -> wrapTick(line)).
+                    filter(tick -> tick != null).
+                    forEach(tick -> onTick(tick));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        strategy.done();
     }
 
     protected abstract Tick wrapTick(String line);

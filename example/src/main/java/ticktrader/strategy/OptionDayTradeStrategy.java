@@ -6,12 +6,10 @@ import ticktrader.dto.Tick;
 import ticktrader.provider.ContractProvider;
 import ticktrader.recorder.Recorder;
 import ticktrader.service.FuturePriceFinder;
-import ticktrader.provider.SettleContractProvider;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -20,46 +18,27 @@ import java.util.Optional;
  * Date: 2015/4/27
  */
 public class OptionDayTradeStrategy extends AbstractStrategy {
-    private String contract;
-    private int exPrice;
-    private FutureType type = FutureType.CALL;
-    private FuturePriceFinder futurePriceFinder;
+    protected String contract;
+    protected int exPrice;
+    protected FutureType type = FutureType.CALL;
+    protected FuturePriceFinder futurePriceFinder;
 
-    public OptionDayTradeStrategy(Recorder recorder, ContractProvider contractProvider) throws URISyntaxException {
+    public OptionDayTradeStrategy(Recorder recorder, ContractProvider contractProvider, int year) throws URISyntaxException {
         super(recorder, contractProvider);
-        URI uriOpen = getClass().getResource("/2014_open_tick.csv").toURI();
-        URI uriClose = getClass().getResource("/2014_last_tick.csv").toURI();
+        URI uriOpen = getClass().getResource(String.format("/%d_open_tick.csv", year)).toURI();
+        URI uriClose = getClass().getResource(String.format("/%d_last_tick.csv", year)).toURI();
         futurePriceFinder = new FuturePriceFinder(Paths.get(uriOpen), Paths.get(uriClose));
-    }
-
-    private int roundUpExPrice(double price){
-        int i = (int) (price % 100);
-        if (i > 50) {
-            return ((int)(price / 100) * 100 + 100);
-        } else {
-            return ((int)(price / 100) * 100);
-        }
     }
 
     @Override
     public void onFirstTick(Tick tick) {
-        assert (contractProvider != null) : "contractProvider is expected.";
-        Optional<Tick> closeTick = futurePriceFinder.find(lastTradedate, "TX", FuturePriceFinder.Type.CLOSE);
         contract = contractProvider.closestContract(date);
         Optional<Tick> openTick = futurePriceFinder.find(date, "TX", FuturePriceFinder.Type.OPEN);
 
         if (openTick.isPresent()){
             double price = openTick.get().getPrice();
-            exPrice = roundUpExPrice(price);
-
-            if (closeTick.isPresent()){
-                // go up at open
-                if (openTick.get().getPrice() > closeTick.get().getPrice()){
-                    type = FutureType.PUT;
-                } else {// go down at open
-                    type = FutureType.CALL;
-                }
-            }
+            exPrice = (int) (price / 100);
+            exPrice *= 100;
         }
     }
 
@@ -89,7 +68,7 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
             placePosition(position);
         }
 
-        if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions()!=0 && tick.getExPrice() == exPrice) {
+        if (tickTime.isAfter(LocalTime.of(13, 40, 00)) && positions()!=0 && tick.getExPrice() == exPrice) {
             settleAllPosition(tick);
         }
     }
