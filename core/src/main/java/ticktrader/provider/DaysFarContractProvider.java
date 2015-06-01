@@ -21,9 +21,9 @@ public class DaysFarContractProvider implements ContractProvider {
         LocalDate nextCeilingKey = settleContractProvider.closestDate(ceilingkey.plusDays(1));
         long days = Period.between(time, ceilingkey).getDays();
         if (days > daysFar){
-            return settleContractProvider.closestContract(ceilingkey);
+            return settleContractProvider.exactlyContractDay(ceilingkey);
         } else {
-            return settleContractProvider.closestContract(nextCeilingKey);
+            return settleContractProvider.exactlyContractDay(nextCeilingKey);
         }
     }
 }

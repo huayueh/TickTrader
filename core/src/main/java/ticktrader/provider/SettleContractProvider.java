@@ -71,4 +71,9 @@ public class SettleContractProvider implements ContractProvider {
         Settle settle = his.get(key);
         return settle.getContract();
     }
+
+    public String exactlyContractDay(LocalDate time) {
+        Settle settle = his.get(time);
+        return settle.getContract();
+    }
 }

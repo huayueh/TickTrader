@@ -22,6 +22,7 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
     private double curMaxDrawdown;
     private double curMaxDrawup;
     private double winningRate;
+    private double totalPnl;
     private int cnt;
     private int winCnt;
 
@@ -31,6 +32,8 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
 
     @Override
     public void record(Position position) {
+        totalPnl += position.getPnl();
+
         cnt++;
         if (position.getPnl() > 0){
             winCnt++;
@@ -93,6 +96,11 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
 
     @Override
     public void done() {
+        write("TotalPnl");
+        write(System.lineSeparator());
+        write(Double.toString(totalPnl));
+
+        write(System.lineSeparator());
         write("WinningRate");
         write(System.lineSeparator());
         write(Double.toString(winningRate));
@@ -100,12 +108,12 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
         write(System.lineSeparator());
         write("MaxWin");
         write(System.lineSeparator());
-        write(maxWin.toString());
+        write(maxWin.toString() + maxWin.getPnl());
 
         write(System.lineSeparator());
         write("MaxLoss");
         write(System.lineSeparator());
-        write(maxLoss.toString());
+        write(maxLoss.toString() + maxLoss.getPnl());
 
         write(System.lineSeparator());
         write("MaxDrawUp");
