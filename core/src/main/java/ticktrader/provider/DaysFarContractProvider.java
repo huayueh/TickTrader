@@ -1,7 +1,7 @@
 package ticktrader.provider;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Author: huayueh
@@ -19,7 +19,8 @@ public class DaysFarContractProvider implements ContractProvider {
     public String closestContract(LocalDate time) {
         LocalDate ceilingkey = settleContractProvider.closestDate(time);
         LocalDate nextCeilingKey = settleContractProvider.closestDate(ceilingkey.plusDays(1));
-        long days = Period.between(time, ceilingkey).getDays();
+//        int days = Period.between(time, ceilingkey).getDays();
+        long days = ChronoUnit.DAYS.between(time, ceilingkey);
         if (days > daysFar){
             return settleContractProvider.exactlyContractDay(ceilingkey);
         } else {
