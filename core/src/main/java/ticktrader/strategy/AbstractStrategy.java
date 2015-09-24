@@ -92,6 +92,7 @@ public abstract class AbstractStrategy implements Strategy {
         if (queue == null)
             return;
 
+        double totalPnl = 0;
         for (Position pos : queue) {
             // concept: over 0 profit
             double pnl;
@@ -100,11 +101,11 @@ public abstract class AbstractStrategy implements Strategy {
             } else {
                 pnl = (pos.getPrice() - tick.getPrice()) * pos.getQty();
             }
-            curPnl += pnl;
+            totalPnl += (pnl - cost);
             pos.setPnl(pnl - cost);
             pos.setNetPnl(pnl);
         }
-        onTick(tick);
+        curPnl = totalPnl;
     }
 
     @Override
