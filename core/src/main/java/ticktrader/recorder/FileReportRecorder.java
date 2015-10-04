@@ -23,8 +23,14 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
     private double curMaxDrawup;
     private double winningRate;
     private double totalPnl;
+    private double totalWin;
+    private double totalLose;
     private int cnt;
     private int winCnt;
+    private double curMaxWinCnt = 1;
+    private double curMaxLoseCnt = 1;
+    private double maxWinCnt;
+    private double maxLoseCnt;
 
     public FileReportRecorder(Path path) {
         super(path);
@@ -33,6 +39,11 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
     @Override
     public void record(Position position) {
         totalPnl += position.getPnl();
+        if (position.getPnl() > 0){
+            totalWin += position.getPnl();
+        } else {
+            totalLose += position.getPnl();
+        }
 
         cnt++;
         if (position.getPnl() > 0){
@@ -54,25 +65,31 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
             if (lastPosition.getPnl() > 0 && position.getPnl() > 0){
                 // max draw up
                 curMaxDrawup += position.getPnl();
+                curMaxWinCnt++;
             } else if(lastPosition.getPnl() < 0 && position.getPnl() < 0){
                 // max draw down
                 curMaxDrawdown += position.getPnl();
+                curMaxLoseCnt++;
             } else {
                 // different side count current
                 if (curMaxDrawdown < maxDrawdown){
                     maxDrawdown = curMaxDrawdown;
                     maxDrawDownStart = curMaxDrawStart;
-                    maxDrawDownEnd = position;
+                    maxDrawDownEnd = lastPosition;
+                    maxLoseCnt = curMaxLoseCnt;
                 }
                 if (curMaxDrawup > maxDrawup){
                     maxDrawup = curMaxDrawup;
                     maxDrawUpStart = curMaxDrawStart;
-                    maxDrawUpEnd = position;
+                    maxDrawUpEnd = lastPosition;
+                    maxWinCnt = curMaxWinCnt;
                 }
 
                 curMaxDrawStart = null;
                 curMaxDrawdown = 0;
                 curMaxDrawup = 0;
+                curMaxWinCnt = 1;
+                curMaxLoseCnt = 1;
             }
         }
 
@@ -96,53 +113,43 @@ public class FileReportRecorder extends AbstractFileRecorder<Position> {
 
     @Override
     public void done() {
-        write("TotalPnl");
-        write(System.lineSeparator());
-        write(Double.toString(totalPnl));
+        write("TotalPnl : " + Double.toString(totalPnl));
 
         write(System.lineSeparator());
-        write("WinningRate");
-        write(System.lineSeparator());
-        write(Double.toString(winningRate));
+        write("AverageWin : " + Double.toString(totalWin/winCnt));
 
         write(System.lineSeparator());
-        write("MaxWin");
-        write(System.lineSeparator());
-        write(maxWin.toString() + maxWin.getPnl());
+        write("AverageLose : " + Double.toString(totalLose/(cnt-winCnt)));
 
         write(System.lineSeparator());
-        write("MaxLoss");
-        write(System.lineSeparator());
-        write(maxLoss.toString() + maxLoss.getPnl());
+        write("WinLoseRate : " + Double.toString((totalWin/winCnt)/ (totalWin/(cnt-winCnt))));
 
         write(System.lineSeparator());
-        write("MaxDrawUp");
-        write(System.lineSeparator());
-        write(Double.toString(maxDrawup));
+        write("WinningRate : " + Double.toString(winningRate));
 
         write(System.lineSeparator());
-        write("MaxDrawUpStart");
-        write(System.lineSeparator());
-        write(maxDrawUpStart.toString());
+        write("MaxWin : " + maxWin.toString() + maxWin.getPnl());
 
         write(System.lineSeparator());
-        write("MaxDrawUpEnd");
-        write(System.lineSeparator());
-        write(maxDrawUpEnd.toString());
+        write("MaxLoss : " + maxLoss.toString() + maxLoss.getPnl());
 
         write(System.lineSeparator());
-        write("MaxDrawDown");
-        write(System.lineSeparator());
-        write(Double.toString(maxDrawdown));
+        write("MaxDrawUp : " + Double.toString(maxDrawup));
 
         write(System.lineSeparator());
-        write("MaxDrawDownStart");
-        write(System.lineSeparator());
-        write(maxDrawDownStart.toString());
+        write("MaxDrawUpPeriod : " + maxDrawUpStart.getOpenTime() + " ~ " + maxDrawUpEnd.getCloseTime());
 
         write(System.lineSeparator());
-        write("MaxDrawDownEnd");
+        write("MaxWinCnt : " + Double.toString(maxWinCnt));
+
         write(System.lineSeparator());
-        write(maxDrawDownEnd.toString());
+        write("MaxDrawDown : " + Double.toString(maxDrawdown));
+
+        write(System.lineSeparator());
+        write("MaxLoseCnt : " + Double.toString(maxLoseCnt));
+
+        write(System.lineSeparator());
+        write("MaxDrawDownPeriod : " + maxDrawDownStart.getOpenTime() + " ~ " + maxDrawDownEnd.getCloseTime());
+
     }
 }

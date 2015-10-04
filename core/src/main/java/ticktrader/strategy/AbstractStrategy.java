@@ -116,8 +116,8 @@ public abstract class AbstractStrategy implements Strategy {
             } else {
                 pnl = (pos.getPrice() - tick.getPrice()) * pos.getQty();
             }
-            totalPnl += (pnl - cost);
-            pos.setPnl(pnl - cost);
+            totalPnl += (pnl - cost*pos.getQty());
+            pos.setPnl(pnl - cost*pos.getQty());
             pos.setNetPnl(pnl);
         }
         curPnl = totalPnl;
