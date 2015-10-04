@@ -1,7 +1,7 @@
 package ticktrader.service;
 
+import ticktrader.dto.Contract;
 import ticktrader.dto.Tick;
-import ticktrader.dto.Topic;
 import ticktrader.strategy.Strategy;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class OpenTickService extends FutureTickService {
             Optional<Tick> opTick = stream.map(line -> wrapTick(line)).
                     filter(tick -> {
                         if (tick != null) {
-                            return topics.contains(Topic.get(tick));
+                            return contracts.contains(Contract.getCurrent(tick));
                         }
                         return false;
                     }).

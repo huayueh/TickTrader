@@ -9,7 +9,7 @@ import ticktrader.provider.SettleContractProvider;
  * Author: huayueh
  * Date: 2015/4/27
  */
-public class Topic {
+public class Contract {
     public static final String ANY = "ANY";
     public static final String CURRENT = "CURRENT";
     public static final int ANY_PRICE = 0;
@@ -20,7 +20,7 @@ public class Topic {
     private final int exPrice;
     private final FutureType futureType;
 
-    public Topic(String symbol, String contract, int exPrice, FutureType futureType) {
+    public Contract(String symbol, String contract, int exPrice, FutureType futureType) {
         this.symbol = symbol;
         this.contract = contract;
         this.exPrice = exPrice;
@@ -43,12 +43,20 @@ public class Topic {
         return futureType;
     }
 
-    public static Topic get(Tick tick) {
+    public static Contract getCurrent(Tick tick) {
         String contract = contractProvider.closestContract(tick.getTime().toLocalDate());
         if (tick.getContract().equals(contract)){
-            return new Topic(tick.getSymbol(), CURRENT, tick.getExPrice(), tick.getFutureType());
+            return new Contract(tick.getSymbol(), CURRENT, tick.getExPrice(), tick.getFutureType());
         }
-        return new Topic(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getFutureType());
+        return new Contract(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getFutureType());
+    }
+
+    public static Contract get(Tick tick) {
+        return new Contract(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getFutureType());
+    }
+
+    public static Contract get(Position position) {
+        return new Contract(position.getSymbol(), position.getContract(), position.getExPrice(), position.getFutureType());
     }
 
     @Override
@@ -68,21 +76,21 @@ public class Topic {
             return false;
         if (obj == this)
             return true;
-        if (!(obj instanceof Topic))
+        if (!(obj instanceof Contract))
             return false;
 
-        Topic topic = (Topic) obj;
+        Contract contract = (Contract) obj;
         EqualsBuilder builder = new EqualsBuilder().
-                append(futureType, topic.futureType);
+                append(futureType, contract.futureType);
 
-        if (exPrice != ANY_PRICE && topic.exPrice != ANY_PRICE)
-            builder.append(exPrice, topic.exPrice);
+        if (exPrice != ANY_PRICE && contract.exPrice != ANY_PRICE)
+            builder.append(exPrice, contract.exPrice);
 
-        if (!symbol.equals(ANY) && !topic.symbol.equals(ANY))
-            builder.append(symbol, topic.symbol);
+        if (!symbol.equals(ANY) && !contract.symbol.equals(ANY))
+            builder.append(symbol, contract.symbol);
 
-        if (!contract.equals(ANY) && !topic.contract.equals(ANY))
-            builder.append(contract, topic.contract);
+        if (!this.contract.equals(ANY) && !contract.contract.equals(ANY))
+            builder.append(this.contract, contract.contract);
 
         return builder.build();
     }

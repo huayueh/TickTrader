@@ -76,8 +76,8 @@ public class Tick {
         return futureType;
     }
 
-//    public Topic getTopic(){
-//        return new Topic(symbol, contract, exPrice, putOrCall);
+//    public Contract getTopic(){
+//        return new Contract(symbol, contract, exPrice, putOrCall);
 //    }
 
     @Override

@@ -1,5 +1,6 @@
 package ticktrader.strategy;
 
+import ticktrader.dto.Contract;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.provider.ContractProvider;
@@ -18,7 +19,7 @@ public abstract class AbstractStrategy implements Strategy {
     protected double curPnl = 0;
     protected LocalDate date;
     protected LocalDate lastTradedate;
-    private Map<String, Queue<Position>> positions = new HashMap<>();
+    private Map<Contract, Queue<Position>> positions = new HashMap<>();
     private Set<LocalDate> tradedDate = new HashSet<>();
     private int cost = 3;
 
@@ -45,16 +46,9 @@ public abstract class AbstractStrategy implements Strategy {
         }
     }
 
-    protected int positions(String symbol, String contract){
-        Queue<Position> posQueue = positions.get(symbol + contract);
-        if (posQueue != null)
-            return posQueue.size();
-        return 0;
-    }
-
     protected int positions(){
         int cnt = 0;
-        for(Map.Entry<String, Queue<Position>> entry : positions.entrySet()) {
+        for(Map.Entry<Contract, Queue<Position>> entry : positions.entrySet()) {
             cnt += entry.getValue().size();
         }
         return cnt;
@@ -66,28 +60,49 @@ public abstract class AbstractStrategy implements Strategy {
 
     protected void placePosition(Position position) {
         tradedDate.add(date);
-        Queue<Position> posQueue = positions.get(position.getSymbol() + position.getContract());
+        Contract contract = Contract.get(position);
+        Queue<Position> posQueue = positions.get(contract);
         if (posQueue == null) {
             posQueue = new LinkedList<>();
         }
         posQueue.offer(position);
-        positions.put(position.getSymbol() + position.getContract(), posQueue);
+        positions.put(contract, posQueue);
     }
 
     protected void settleAllPosition(Tick tick) {
-        Queue<Position> posQueue = positions.get(tick.getSymbol() + tick.getContract());
+        Queue<Position> posQueue = positions.get(Contract.get(tick));
         while (posQueue != null && !posQueue.isEmpty()) {
             Position position = posQueue.poll();
             position.fillAllQuantity(tick.getPrice(), tick.getTime());
             curPnl = 0;
             recorder.record(position);
         }
-        positions.clear();
+
+//        positions.clear();
+    }
+
+    protected void settleAllLosePosition(Tick tick) {
+        Queue<Position> posQueue = positions.get(Contract.get(tick));
+        while (posQueue.peek() != null && posQueue.peek().getPnl() <= 0) {
+            Position position = posQueue.poll();
+            position.fillAllQuantity(tick.getPrice(), tick.getTime());
+            curPnl += position.getPnl();
+            recorder.record(position);
+        }
+    }
+
+    protected void settleAllWinPosition(Tick tick) {
+        Queue<Position> posQueue = positions.get(Contract.get(tick));
+        while (posQueue.peek() != null && posQueue.peek().getPnl() >= 0) {
+            Position position = posQueue.poll();
+            position.fillAllQuantity(tick.getPrice(), tick.getTime());
+            curPnl += position.getPnl();
+            recorder.record(position);
+        }
     }
 
     protected void cntPnl(Tick tick) {
-        String key = tick.getSymbol() + tick.getContract();
-        Queue<Position> queue = positions.get(key);
+        Queue<Position> queue = positions.get(Contract.get(tick));
 
         if (queue == null)
             return;

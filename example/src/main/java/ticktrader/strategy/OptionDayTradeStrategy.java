@@ -55,6 +55,10 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
         LocalTime tickTime = tick.getTime().toLocalTime();
 
         if (tickTime.isAfter(LocalTime.of(8, 44, 59)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
+            // day trade strategy
+            if (tradedToday())
+                return;
+
             Position position = new Position.Builder().
                     symbol(tick.getSymbol()).
                     contract(tick.getContract()).

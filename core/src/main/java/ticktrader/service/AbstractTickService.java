@@ -3,7 +3,7 @@ package ticktrader.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.Tick;
-import ticktrader.dto.Topic;
+import ticktrader.dto.Contract;
 import ticktrader.strategy.Strategy;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 public abstract class AbstractTickService extends Observable implements TickService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractTickService.class);
     protected final Strategy strategy;
-    protected List<Topic> topics = new ArrayList<>();
+    protected List<Contract> contracts = new ArrayList<>();
     private Path path;
     private int year;
 
@@ -41,19 +41,19 @@ public abstract class AbstractTickService extends Observable implements TickServ
     }
 
     @Override
-    public void addTopic(Topic topic) {
-        topics.add(topic);
+    public void addContract(Contract contract) {
+        contracts.add(contract);
     }
 
     @Override
-    public void removeTopic(Topic topic) {
-        topics.remove(topic);
+    public void removeContract(Contract contract) {
+        contracts.remove(contract);
     }
 
 
     @Override
     public void onTick(final Tick tick) {
-        if (topics.contains(Topic.get(tick))) {
+        if (contracts.contains(Contract.getCurrent(tick))) {
             logger.debug("{}", tick);
             setChanged();
             notifyObservers(tick);

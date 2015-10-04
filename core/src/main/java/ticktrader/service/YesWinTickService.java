@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ticktrader.dto.FutureType;
 import ticktrader.dto.Tick;
-import ticktrader.dto.Topic;
+import ticktrader.dto.Contract;
 import ticktrader.recorder.PrintPositionRecorder;
 import ticktrader.strategy.PrintStrategy;
 import ticktrader.strategy.Strategy;
@@ -93,11 +93,11 @@ public class YesWinTickService extends AbstractTickService {
     }
 
     @Override
-    public void addTopic(Topic topic) {
-        super.addTopic(topic);
-        String pc = FutureType.PUT.equals(topic.getFutureType()) ? "Q5" : "E5";
-        String exPrice = (topic.getExPrice() < 10000)?"0"+topic.getExPrice():""+topic.getExPrice();
-        String item = topic.getSymbol() + exPrice + pc + ".Price";
+    public void addContract(Contract contract) {
+        super.addContract(contract);
+        String pc = FutureType.PUT.equals(contract.getFutureType()) ? "Q5" : "E5";
+        String exPrice = (contract.getExPrice() < 10000)?"0"+ contract.getExPrice():""+ contract.getExPrice();
+        String item = contract.getSymbol() + exPrice + pc + ".Price";
         try {
             conversation.startAdvice(item);
         } catch (DDEException e) {
@@ -106,11 +106,11 @@ public class YesWinTickService extends AbstractTickService {
     }
 
     @Override
-    public void removeTopic(Topic topic) {
-        super.removeTopic(topic);
-        String pc = FutureType.PUT.equals(topic.getFutureType()) ? "Q5" : "E5";
-        String exPrice = (topic.getExPrice() < 10000)?"0"+topic.getExPrice():""+topic.getExPrice();
-        String item = topic.getSymbol() + exPrice + pc + ".Price";
+    public void removeContract(Contract contract) {
+        super.removeContract(contract);
+        String pc = FutureType.PUT.equals(contract.getFutureType()) ? "Q5" : "E5";
+        String exPrice = (contract.getExPrice() < 10000)?"0"+ contract.getExPrice():""+ contract.getExPrice();
+        String item = contract.getSymbol() + exPrice + pc + ".Price";
         try {
             conversation.stopAdvice(item);
         } catch (DDEException e) {
@@ -122,11 +122,11 @@ public class YesWinTickService extends AbstractTickService {
         TickService tickService = new YesWinTickService(new PrintStrategy(new PrintPositionRecorder()));
         new Thread(tickService).start();
         TimeUnit.SECONDS.sleep(2);
-        tickService.addTopic(new Topic("TXO", "", 10000, FutureType.PUT));
-        tickService.addTopic(new Topic("TXO", "", 10000, FutureType.CALL));
-        tickService.addTopic(new Topic("TXO", "", 9900, FutureType.PUT));
-        tickService.addTopic(new Topic("TXO", "", 9900, FutureType.CALL));
-        tickService.addTopic(new Topic("TXO", "", 9800, FutureType.PUT));
-        tickService.addTopic(new Topic("TXO", "", 9800, FutureType.CALL));
+        tickService.addContract(new Contract("TXO", "", 10000, FutureType.PUT));
+        tickService.addContract(new Contract("TXO", "", 10000, FutureType.CALL));
+        tickService.addContract(new Contract("TXO", "", 9900, FutureType.PUT));
+        tickService.addContract(new Contract("TXO", "", 9900, FutureType.CALL));
+        tickService.addContract(new Contract("TXO", "", 9800, FutureType.PUT));
+        tickService.addContract(new Contract("TXO", "", 9800, FutureType.CALL));
     }
 }
