@@ -15,6 +15,7 @@ public class PrintStrategy extends AbstractStrategy {
     @Override
     public void onTick(Tick tick) {
         System.out.println(tick);
+        recorder.record(tick);
     }
 
     @Override

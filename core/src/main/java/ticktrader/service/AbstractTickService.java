@@ -2,8 +2,8 @@ package ticktrader.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ticktrader.dto.Tick;
 import ticktrader.dto.Contract;
+import ticktrader.dto.Tick;
 import ticktrader.strategy.Strategy;
 
 import java.io.IOException;
@@ -53,11 +53,9 @@ public abstract class AbstractTickService extends Observable implements TickServ
 
     @Override
     public void onTick(final Tick tick) {
-        if (contracts.contains(Contract.getCurrent(tick))) {
-            logger.debug("{}", tick);
-            setChanged();
-            notifyObservers(tick);
-        }
+        logger.debug("{}", tick);
+        setChanged();
+        notifyObservers(tick);
     }
 
     @Override
@@ -84,6 +82,8 @@ public abstract class AbstractTickService extends Observable implements TickServ
         try (Stream<String> stream = Files.lines(path, Charset.defaultCharset())) {
             stream.map(line -> wrapTick(line)).
                     filter(tick -> tick != null).
+                    filter(tick -> contracts.contains(Contract.getCurrent(tick))).
+                    sorted((t1, t2) -> t1.getTime().compareTo(t2.getTime())).
                     forEach(tick -> onTick(tick));
         } catch (IOException e) {
             e.printStackTrace();

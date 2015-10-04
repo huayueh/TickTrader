@@ -7,7 +7,7 @@ import ticktrader.provider.DaysFarContractProvider;
 import ticktrader.recorder.*;
 import ticktrader.service.OptionTickService;
 import ticktrader.service.TickService;
-import ticktrader.strategy.MyOptionDayTradeStrategy;
+import ticktrader.strategy.OptionDayTradeStrategy;
 import ticktrader.strategy.Strategy;
 
 import java.net.URISyntaxException;
@@ -30,7 +30,7 @@ public class OptionDayTradeExample {
         Recorder<Position> recorder = new ComposePositionRecorder(recorders);
 
         //strategy
-        Strategy strategy = new MyOptionDayTradeStrategy(recorder, new DaysFarContractProvider(3), year);
+        Strategy strategy = new OptionDayTradeStrategy(recorder, new DaysFarContractProvider(3), year);
         TickService tickService = new OptionTickService("D:/Tick/Option_rpt/", year, strategy);
         tickService.addContract(new Contract("TXO", Contract.ANY, Contract.ANY_PRICE, FutureType.PUT));
         tickService.addContract(new Contract("TXO", Contract.ANY, Contract.ANY_PRICE, FutureType.CALL));
