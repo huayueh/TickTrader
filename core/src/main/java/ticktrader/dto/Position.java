@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  * Date: 2015/4/21
  */
 public class Position {
+    //TODO: Order
     private final String symbol;
     private final String contract;
     private final double price;

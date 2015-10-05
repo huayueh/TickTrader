@@ -20,10 +20,11 @@ public abstract class AbstractStrategy implements Strategy {
     protected LocalDate date;
     protected LocalDate lastTradedate;
     private Map<Contract, Queue<Position>> positions = new HashMap<>();
+    private Map<Contract, Queue<Position>> pendings = new HashMap<>();
     private Set<LocalDate> tradedDate = new HashSet<>();
     private int cost = 3;
 
-    public AbstractStrategy(Recorder recorder, ContractProvider contractProvider){
+    public AbstractStrategy(Recorder recorder, ContractProvider contractProvider) {
         this.recorder = recorder;
         this.contractProvider = contractProvider;
     }
@@ -42,19 +43,20 @@ public abstract class AbstractStrategy implements Strategy {
                 date = tick.getTime().toLocalDate();
                 onFirstTick(tick);
             }
+            checkPending(tick);
             onTick(tick);
         }
     }
 
-    protected int positions(){
+    protected int positions() {
         int cnt = 0;
-        for(Map.Entry<Contract, Queue<Position>> entry : positions.entrySet()) {
+        for (Map.Entry<Contract, Queue<Position>> entry : positions.entrySet()) {
             cnt += entry.getValue().size();
         }
         return cnt;
     }
 
-    protected boolean tradedToday(){
+    protected boolean tradedToday() {
         return tradedDate.contains(date);
     }
 
@@ -67,6 +69,16 @@ public abstract class AbstractStrategy implements Strategy {
         }
         posQueue.offer(position);
         positions.put(contract, posQueue);
+    }
+
+    protected void pendingPosition(Position position) {
+        Contract contract = Contract.get(position);
+        Queue<Position> posQueue = pendings.get(contract);
+        if (posQueue == null) {
+            posQueue = new LinkedList<>();
+        }
+        posQueue.offer(position);
+        pendings.put(contract, posQueue);
     }
 
     protected void settleAllPosition(Tick tick) {
@@ -116,11 +128,32 @@ public abstract class AbstractStrategy implements Strategy {
             } else {
                 pnl = (pos.getPrice() - tick.getPrice()) * pos.getQty();
             }
-            totalPnl += (pnl - cost*pos.getQty());
-            pos.setPnl(pnl - cost*pos.getQty());
+            totalPnl += (pnl - cost * pos.getQty());
+            pos.setPnl(pnl - cost * pos.getQty());
             pos.setNetPnl(pnl);
         }
-        curPnl = totalPnl;
+        curPnl += totalPnl;
+    }
+
+    private void checkPending(Tick tick) {
+        Queue<Position> queue = pendings.get(Contract.get(tick));
+        if (queue == null)
+            return;
+
+        while (!queue.isEmpty()) {
+            Position position = queue.poll();
+            placePosition(new Position.Builder().
+                            symbol(tick.getSymbol()).
+                            contract(tick.getContract()).
+                            side(position.getSide()).
+                            price(tick.getPrice()).
+                            qty(position.getQty()).
+                            openTime(tick.getTime()).
+                            putOrCall(position.getFutureType()).
+                            exercisePrice(tick.getExPrice()).
+                            build()
+            );
+        }
     }
 
     @Override

@@ -1,11 +1,16 @@
 package ticktrader;
 
 import org.junit.Test;
+import org.mockito.Mock;
 import ticktrader.dto.FutureType;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
+import ticktrader.recorder.PrintPositionRecorder;
 import ticktrader.strategy.AbstractStrategy;
 import ticktrader.strategy.Strategy;
+
+import java.time.LocalDateTime;
+import java.util.Observable;
 
 /**
  * Author: huayueh
@@ -14,17 +19,18 @@ import ticktrader.strategy.Strategy;
 public class InverseTest {
     private String symbol = "mockSymbol";
     private String contract = "mockContract";
-    private FutureType type = FutureType.CALL;
+
+    @Mock
+    Observable observable;
 
     @Test
     public void testInverse() {
-        Strategy strategy = new AbstractStrategy(null, null) {
+        Strategy strategy = new AbstractStrategy(new PrintPositionRecorder(), null) {
             private boolean inversed = false;
 
             @Override
             public void onTick(Tick tick) {
-                cntPnl(tick);
-                if (!tradedToday()){
+                if (!tradedToday()) {
                     Position position = new Position.Builder().
                             symbol(symbol).
                             contract(contract).
@@ -32,7 +38,7 @@ public class InverseTest {
                             price(tick.getPrice()).
                             qty(1).
                             openTime(tick.getTime()).
-                            putOrCall(type).
+                            putOrCall(FutureType.CALL).
                             exercisePrice(tick.getExPrice()).
                             build();
                     placePosition(position);
@@ -40,23 +46,22 @@ public class InverseTest {
 
                 // inverse position
                 if ((positions() != 0) && !inversed && (curPnl < -30)) {
-                    FutureType inversType = FutureType.CALL.equals(type)?FutureType.PUT:FutureType.CALL;
+                    FutureType inversType = FutureType.PUT;
                     Position position = new Position.Builder().
                             symbol(tick.getSymbol()).
                             contract(tick.getContract()).
                             side(Position.Side.Sell).
-                            price(tick.getPrice()).
                             qty(1).
-                            openTime(tick.getTime()).
                             putOrCall(inversType).
                             exercisePrice(tick.getExPrice()).
                             build();
-                    placePosition(position);
+                    pendingPosition(position);
                     inversed = true;
                 }
 
                 if ((positions() != 0) && inversed && (curPnl == 0)) {
                     settleAllPosition(tick);
+                    //TODO: stop order
                 }
             }
 
@@ -67,18 +72,37 @@ public class InverseTest {
         };
 
         Tick tick1 = new Tick();
+        tick1.setTime(LocalDateTime.now());
         tick1.setSymbol(symbol);
         tick1.setContract(contract);
-        tick1.setFutureType(type);
+        tick1.setFutureType(FutureType.CALL);
         tick1.setPrice(100);
-        strategy.onTick(tick1);
+        strategy.update(observable, tick1);
 
         Tick tick2 = new Tick();
+        tick2.setTime(LocalDateTime.now());
         tick2.setSymbol(symbol);
         tick2.setContract(contract);
-        tick2.setFutureType(type);
+        tick2.setFutureType(FutureType.CALL);
         tick2.setPrice(130);
-        strategy.onTick(tick2);
+        strategy.update(observable, tick2);
 
+        Tick tick3 = new Tick();
+        tick3.setTime(LocalDateTime.now());
+        tick3.setSymbol(symbol);
+        tick3.setContract(contract);
+        tick3.setFutureType(FutureType.PUT);
+        tick3.setPrice(136);
+        strategy.update(observable, tick3);
+
+        Tick tick4 = new Tick();
+        tick4.setTime(LocalDateTime.now());
+        tick4.setSymbol(symbol);
+        tick4.setContract(contract);
+        tick4.setFutureType(FutureType.PUT);
+        tick4.setPrice(100);
+        strategy.update(observable, tick4);
+
+        strategy.update(observable, tick2);
     }
 }
