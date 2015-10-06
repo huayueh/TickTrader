@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class Order {
     private final String symbol;
     private final String contract;
-    private final double price;
+    private double price;
     private final double qty;
     private final Side side;
     private final FutureType futureType;
@@ -57,6 +57,10 @@ public class Order {
 
     public int getExPrice() {
         return exPrice;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public static class Builder {

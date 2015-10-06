@@ -121,6 +121,8 @@ public abstract class AbstractStrategy implements Strategy {
             return;
 
         double totalPnl = 0;
+
+        // floating pnl
         for (Position pos : queue) {
             // concept: over 0 profit
             double pnl;
@@ -129,11 +131,18 @@ public abstract class AbstractStrategy implements Strategy {
             } else {
                 pnl = (pos.getOrder().getPrice() - tick.getPrice()) * pos.getOrder().getQty();
             }
-            totalPnl += (pnl - cost * pos.getOrder().getQty());
             pos.setPnl(pnl - cost * pos.getOrder().getQty());
             pos.setNetPnl(pnl);
         }
-        curPnl += totalPnl;
+
+        // all position
+        for (Map.Entry<Contract, Queue<Position>> entry : positions.entrySet()) {
+            for (Position pos :entry.getValue()){
+                totalPnl += pos.getPnl();
+            }
+        }
+
+        curPnl = totalPnl;
     }
 
     private void checkOrder(Tick tick) {
@@ -143,6 +152,10 @@ public abstract class AbstractStrategy implements Strategy {
 
         while (!queue.isEmpty()) {
             Order order = queue.poll();
+            if (order.getPrice() == 0){
+                //market order
+                order.setPrice(tick.getPrice());
+            }
             placePosition(new Position(order, tick.getTime()));
         }
     }

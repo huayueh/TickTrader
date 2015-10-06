@@ -57,6 +57,7 @@ public class Position {
     @Override
     public String toString() {
         ToStringBuilder builder =  new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).
+                append(order).
                 append(openTime).
                 append(closePrice).
                 append(closeTime);
