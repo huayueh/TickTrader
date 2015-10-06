@@ -22,16 +22,16 @@ public class FilePositionRecorder extends AbstractFileRecorder<Position> {
     @Override
     public void record(Position position) {
         ToStringBuilder builder = new ToStringBuilder(position, ToStringStyle.SIMPLE_STYLE).
-                append(position.getSymbol()).
-                append(position.getContract()).
+                append(position.getOrder().getSymbol()).
+                append(position.getOrder().getContract()).
                 append(position.getOpenTime()).
-                append(position.getPrice()).
-                append(position.getQty()).
-                append(position.getSide().name()).
+                append(position.getOrder().getPrice()).
+                append(position.getOrder().getQty()).
+                append(position.getOrder().getSide().name()).
                 append(position.getClosePrice()).
                 append(position.getCloseTime()).
-                append(position.getFutureType()).
-                append(position.getExPrice()).
+                append(position.getOrder().getFutureType()).
+                append(position.getOrder().getExPrice()).
                 append(position.getNetPnl()).
                 append(position.getPnl());
         builder.append(System.lineSeparator());

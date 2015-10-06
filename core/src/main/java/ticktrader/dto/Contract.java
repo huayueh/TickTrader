@@ -55,8 +55,8 @@ public class Contract {
         return new Contract(tick.getSymbol(), tick.getContract(), tick.getExPrice(), tick.getFutureType());
     }
 
-    public static Contract get(Position position) {
-        return new Contract(position.getSymbol(), position.getContract(), position.getExPrice(), position.getFutureType());
+    public static Contract get(Order order) {
+        return new Contract(order.getSymbol(), order.getContract(), order.getExPrice(), order.getFutureType());
     }
 
     @Override

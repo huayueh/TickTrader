@@ -1,6 +1,7 @@
 package ticktrader.strategy;
 
 import ticktrader.dto.FutureType;
+import ticktrader.dto.Order;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.provider.ContractProvider;
@@ -59,17 +60,16 @@ public class OptionDayTradeStrategy extends AbstractStrategy {
             if (tradedToday())
                 return;
 
-            Position position = new Position.Builder().
+            Order order = new Order.Builder().
                     symbol(tick.getSymbol()).
                     contract(tick.getContract()).
-                    side(Position.Side.Sell).
+                    side(Order.Side.Sell).
                     price(tick.getPrice()).
                     qty(1).
-                    openTime(tick.getTime()).
                     putOrCall(type).
                     exercisePrice(tick.getExPrice()).
                     build();
-            placePosition(position);
+            placePosition(new Position(order, tick.getTime()));
         }
 
         if (tickTime.isAfter(LocalTime.of(13, 40, 00)) && positions()!=0 && tick.getExPrice() == exPrice) {

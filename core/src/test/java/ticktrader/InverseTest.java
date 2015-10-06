@@ -3,6 +3,7 @@ package ticktrader;
 import org.junit.Test;
 import org.mockito.Mock;
 import ticktrader.dto.FutureType;
+import ticktrader.dto.Order;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.recorder.PrintPositionRecorder;
@@ -31,31 +32,30 @@ public class InverseTest {
             @Override
             public void onTick(Tick tick) {
                 if (!tradedToday()) {
-                    Position position = new Position.Builder().
+                    Order order = new Order.Builder().
                             symbol(symbol).
                             contract(contract).
-                            side(Position.Side.Sell).
+                            side(Order.Side.Sell).
                             price(tick.getPrice()).
                             qty(1).
-                            openTime(tick.getTime()).
                             putOrCall(FutureType.CALL).
                             exercisePrice(tick.getExPrice()).
                             build();
-                    placePosition(position);
+                    placePosition(new Position(order, tick.getTime()));
                 }
 
                 // inverse position
                 if ((positions() != 0) && !inversed && (curPnl < -30)) {
                     FutureType inversType = FutureType.PUT;
-                    Position position = new Position.Builder().
+                    Order order = new Order.Builder().
                             symbol(tick.getSymbol()).
                             contract(tick.getContract()).
-                            side(Position.Side.Sell).
+                            side(Order.Side.Sell).
                             qty(1).
                             putOrCall(inversType).
                             exercisePrice(tick.getExPrice()).
                             build();
-                    pendingPosition(position);
+                    sendOrder(order);
                     inversed = true;
                 }
 

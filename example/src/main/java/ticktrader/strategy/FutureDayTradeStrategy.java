@@ -1,10 +1,10 @@
 package ticktrader.strategy;
 
+import ticktrader.dto.Order;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.provider.ContractProvider;
 import ticktrader.recorder.Recorder;
-import ticktrader.provider.SettleContractProvider;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,15 +40,14 @@ public class FutureDayTradeStrategy extends AbstractStrategy {
         LocalTime tickTime = tick.getTime().toLocalTime();
 
         if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
-            Position position = new Position.Builder().
+            Order order = new Order.Builder().
                     symbol(tick.getSymbol()).
                     contract(tick.getContract()).
-                    side(Position.Side.Sell).
+                    side(Order.Side.Sell).
                     price(tick.getPrice()).
                     qty(1).
-                    openTime(tick.getTime()).
                     build();
-            placePosition(position);
+            placePosition(new Position(order, tick.getTime()));
         }
 
         if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions() != 0) {

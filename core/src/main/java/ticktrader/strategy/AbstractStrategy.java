@@ -1,6 +1,7 @@
 package ticktrader.strategy;
 
 import ticktrader.dto.Contract;
+import ticktrader.dto.Order;
 import ticktrader.dto.Position;
 import ticktrader.dto.Tick;
 import ticktrader.provider.ContractProvider;
@@ -20,7 +21,7 @@ public abstract class AbstractStrategy implements Strategy {
     protected LocalDate date;
     protected LocalDate lastTradedate;
     private Map<Contract, Queue<Position>> positions = new HashMap<>();
-    private Map<Contract, Queue<Position>> pendings = new HashMap<>();
+    private Map<Contract, Queue<Order>> orders = new HashMap<>();
     private Set<LocalDate> tradedDate = new HashSet<>();
     private int cost = 3;
 
@@ -43,7 +44,7 @@ public abstract class AbstractStrategy implements Strategy {
                 date = tick.getTime().toLocalDate();
                 onFirstTick(tick);
             }
-            checkPending(tick);
+            checkOrder(tick);
             onTick(tick);
         }
     }
@@ -62,7 +63,7 @@ public abstract class AbstractStrategy implements Strategy {
 
     protected void placePosition(Position position) {
         tradedDate.add(date);
-        Contract contract = Contract.get(position);
+        Contract contract = Contract.get(position.getOrder());
         Queue<Position> posQueue = positions.get(contract);
         if (posQueue == null) {
             posQueue = new LinkedList<>();
@@ -71,14 +72,14 @@ public abstract class AbstractStrategy implements Strategy {
         positions.put(contract, posQueue);
     }
 
-    protected void pendingPosition(Position position) {
-        Contract contract = Contract.get(position);
-        Queue<Position> posQueue = pendings.get(contract);
-        if (posQueue == null) {
-            posQueue = new LinkedList<>();
+    protected void sendOrder(Order order) {
+        Contract contract = Contract.get(order);
+        Queue<Order> orderQueue = orders.get(contract);
+        if (orderQueue == null) {
+            orderQueue = new LinkedList<>();
         }
-        posQueue.offer(position);
-        pendings.put(contract, posQueue);
+        orderQueue.offer(order);
+        orders.put(contract, orderQueue);
     }
 
     protected void settleAllPosition(Tick tick) {
@@ -123,36 +124,26 @@ public abstract class AbstractStrategy implements Strategy {
         for (Position pos : queue) {
             // concept: over 0 profit
             double pnl;
-            if (pos.getSide() == Position.Side.Buy) {
-                pnl = (tick.getPrice() - pos.getPrice()) * pos.getQty();
+            if (pos.getOrder().getSide() == Order.Side.Buy) {
+                pnl = (tick.getPrice() - pos.getOrder().getPrice()) * pos.getOrder().getQty();
             } else {
-                pnl = (pos.getPrice() - tick.getPrice()) * pos.getQty();
+                pnl = (pos.getOrder().getPrice() - tick.getPrice()) * pos.getOrder().getQty();
             }
-            totalPnl += (pnl - cost * pos.getQty());
-            pos.setPnl(pnl - cost * pos.getQty());
+            totalPnl += (pnl - cost * pos.getOrder().getQty());
+            pos.setPnl(pnl - cost * pos.getOrder().getQty());
             pos.setNetPnl(pnl);
         }
         curPnl += totalPnl;
     }
 
-    private void checkPending(Tick tick) {
-        Queue<Position> queue = pendings.get(Contract.get(tick));
+    private void checkOrder(Tick tick) {
+        Queue<Order> queue = orders.get(Contract.get(tick));
         if (queue == null)
             return;
 
         while (!queue.isEmpty()) {
-            Position position = queue.poll();
-            placePosition(new Position.Builder().
-                            symbol(tick.getSymbol()).
-                            contract(tick.getContract()).
-                            side(position.getSide()).
-                            price(tick.getPrice()).
-                            qty(position.getQty()).
-                            openTime(tick.getTime()).
-                            putOrCall(position.getFutureType()).
-                            exercisePrice(tick.getExPrice()).
-                            build()
-            );
+            Order order = queue.poll();
+            placePosition(new Position(order, tick.getTime()));
         }
     }
 
