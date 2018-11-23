@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.10</slf4j.version>
         <log4j.version>2.2</log4j.version>
+        <disruptor.version>3.3.6</disruptor.version>
         <commons-lang.version>3.3.2</commons-lang.version>
         <commons-io.version>2.4</commons-io.version>
         <junit.version>4.8.2</junit.version>
@@ -38,6 +39,11 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>${disruptor.version}</version>
         </dependency>
 
         <!--jni-->
