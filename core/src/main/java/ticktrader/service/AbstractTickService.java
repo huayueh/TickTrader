@@ -93,12 +93,21 @@ public abstract class AbstractTickService extends Observable implements TickServ
 	protected void fileConsumer(Path path) {
 		logger.info("start file: {}", path);
 		try (Stream<String> stream = readLinesFromGZ(path.toFile()).stream()) {
-			stream.map(line -> wrapTick(line)).
-					filter(tick -> tick != null).
-//					filter(tick -> contracts.contains(Contract.getCurrent(tick))).
-					sorted((t1, t2) -> t1.getTime().compareTo(t2.getTime())).
+			stream.map(line -> {
+				Tick tick = null;
+				try {
+					tick = wrapTick(line);
+				}
+				catch (Exception e) {
+					logger.warn("can't turn line {} to tick", line);
+				}
+				return tick;
+			})
+					.filter(tick -> tick != null)
+					.sorted((t1, t2) -> t1.getTime().compareTo(t2.getTime())).
 					forEach(tick -> onTick(tick));
 		}
+
 	}
 
 	private List<String> readLinesFromGZ(File file) {
