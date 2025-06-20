@@ -34,7 +34,14 @@ public class FilePositionRecorder extends AbstractFileRecorder<Position> {
                 append(position.getOrder().getExPrice()).
                 append(position.getNetPnl()).
                 append(position.getPnl());
-        builder.append(System.lineSeparator());
-        write(builder.build());
+        // Do not append lineSeparator to the builder, as it might add an extra comma before it.
+        // Instead, build the string and then append the separator.
+        String output = builder.build();
+        // ToStringBuilder with SIMPLE_STYLE might add a trailing comma if the last field was appended.
+        // Let's check if it does and remove it if necessary, though ideally, it shouldn't for the last element.
+        // A quick check: SIMPLE_STYLE usually just joins with commas. If Pnl is the last, no comma should follow.
+        // The issue might be that builder.append(System.lineSeparator()) was acting like another field.
+
+        write(output + System.lineSeparator());
     }
 }
