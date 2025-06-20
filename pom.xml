@@ -46,8 +46,6 @@
                         </goals>
                         <configuration>
                             <includeScope>compile</includeScope>
-                            <excludeScope>test</excludeScope>
-                            <excludeGroupIds>junit</excludeGroupIds>
                             <outputDirectory>../target</outputDirectory>
                         </configuration>
                     </execution>

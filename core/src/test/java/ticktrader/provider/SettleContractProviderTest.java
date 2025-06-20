@@ -7,56 +7,40 @@ import org.junit.Test;
 import ticktrader.dto.Settle;
 
 import java.io.InputStream;
+import java.io.ByteArrayInputStream; // New import
+import java.nio.charset.StandardCharsets; // New import
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+// Scanner will not be needed in setUp anymore, but might be used by SettleContractProvider if it reads other files.
+// Keep for now, or remove if SettleContractProvider's only scanner usage was for settle.csv
+// import java.util.Scanner;
 import java.util.concurrent.ConcurrentNavigableMap;
-// import java.lang.reflect.Constructor; // Not needed for this version of setUp
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class SettleContractProviderTest {
 
-    private SettleContractProvider settleContractProvider = null;
+    private SettleContractProvider settleContractProvider;
+
+    // Define test CSV data as a string
+    private final String testCsvData =
+            "Date,contract,price\n" +
+            "2023/10/20,TX202310,16500\n" +
+            "2023/11/17,TX202311,16800\n" +
+            "2023/12/15,TX202312,17000\n" +
+            "2024/01/19,TX202401,17200\n" +
+            "2024/02/16,TX202402,17500\n" +
+            "# Weekly contracts to be ignored by the provider (comment line)\n" +
+            "2023/10/25,TX202310W4,16600\n" + // This line will be processed, W will be filtered
+            "2023/11/01,TX202311W1,16700";   // This line will be processed, W will be filtered
 
     @Before
-    public void setUp() throws Exception {
-        // Get the singleton instance
-        this.settleContractProvider = SettleContractProvider.getInstance();
-
-        // Get direct access to its 'his' map
-        Field hisField = SettleContractProvider.class.getDeclaredField("his");
-        hisField.setAccessible(true);
-        @SuppressWarnings("unchecked") // Suppress warning for cast
-        ConcurrentNavigableMap<LocalDate, Settle> hisMap = (ConcurrentNavigableMap<LocalDate, Settle>) hisField.get(this.settleContractProvider);
-        hisMap.clear(); // Clear existing data (which might be from main/resources or a previous test)
-
-        // Manually load data from test/resources/settle.csv
-        InputStream testCsvStream = SettleContractProviderTest.class.getClassLoader().getResourceAsStream("settle.csv");
-        if (testCsvStream == null) {
-            throw new IllegalStateException("Cannot find test settle.csv in test resources. Make sure it's in core/src/test/resources.");
-        }
-        Scanner scan = new Scanner(testCsvStream);
-        String line;
-        while (scan.hasNextLine()) {
-            line = scan.nextLine();
-            String[] ary = StringUtils.split(line, ",");
-            if (ary.length == 3) {
-                String dateStr = ary[0].trim();
-                String contractStr = ary[1].trim();
-                String priceStr = ary[2].trim();
-                if (dateStr.equalsIgnoreCase("Date")) continue; // Skip header
-
-                LocalDate ldate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy/M/d"));
-                if (!contractStr.contains("W")) {
-                    Settle settle = new Settle(ldate, contractStr, NumberUtils.toDouble(priceStr));
-                    hisMap.put(ldate, settle);
-                }
-            }
-        }
-        scan.close();
+    public void setUp() { // Removed "throws Exception" as direct stream creation is less prone to checked exceptions here
+        InputStream testStream = new ByteArrayInputStream(testCsvData.getBytes(StandardCharsets.UTF_8));
+        // Use the new static factory method for testing
+        this.settleContractProvider = SettleContractProvider.getInstanceForTest(testStream);
     }
 
     @Test
@@ -121,7 +105,9 @@ public class SettleContractProviderTest {
     @Test
     public void testExactlyContractDay() {
         // Test case 1: Date exactly on a settlement date
-        LocalDate date1 = LocalDate.of(2023, 10, 20);
+        // Use a LocalDate instance that would have been created by the parser during setUp
+        // to ensure maximum consistency, though LocalDate.of() should be equivalent.
+        LocalDate date1 = LocalDate.parse("2023/10/20", DateTimeFormatter.ofPattern("yyyy/M/d"));
         String expectedContract1 = "TX202310";
         assertEquals(expectedContract1, settleContractProvider.exactlyContractDay(date1));
 

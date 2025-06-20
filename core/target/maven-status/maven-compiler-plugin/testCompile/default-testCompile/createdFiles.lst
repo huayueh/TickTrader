@@ -1,0 +1,4 @@
+ticktrader/recorder/FileReportRecorderTest.class
+ticktrader/recorder/FilePositionRecorderTest.class
+ticktrader/recorder/FileTickRecorderTest.class
+ticktrader/service/FuturePriceFinderTest.class
