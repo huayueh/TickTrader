@@ -32,14 +32,17 @@ public class SettleContractProvider implements ContractProvider {
             scan = new Scanner(is);
 
             while (scan.hasNext()) {
-                line = scan.next();
+                line = scan.nextLine(); // Use nextLine() to read the whole line
                 String[] ary = StringUtils.split(line, ",");
                 //Date,contract,price
                 if (ary.length == 3) {
-                    String date = ary[0].trim();
+                    String dateStr = ary[0].trim();
+                    if (dateStr.equalsIgnoreCase("Date")) { // Skip header row
+                        continue;
+                    }
                     String contract = ary[1].trim();
                     String price = ary[2].trim();
-                    LocalDate ldate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/M/d"));
+                    LocalDate ldate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy/M/d"));
                     //remove weekly contract
                     if (!contract.contains("W")) {
                         Settle settle = new Settle(ldate, contract, NumberUtils.toDouble(price));
