@@ -1,5 +1,6 @@
 package ticktrader.dto;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Author: huayueh
@@ -21,6 +23,16 @@ public class Tick {
     private LocalDateTime localDateTime;
     private int exPrice;
     private FutureType futureType = FutureType.FUTURE;
+
+    public Tick(){}
+
+    public Tick(String symbol, String contract, int exPrice, FutureType futureType, double price) {
+        this.symbol = symbol;
+        this.contract = contract;
+        this.exPrice = exPrice;
+        this.futureType = futureType;
+        this.price = price;
+    }
 
     public String getContract() {
         return contract;
@@ -82,6 +94,21 @@ public class Tick {
 //        return new Contract(symbol, contract, exPrice, putOrCall);
 //    }
 
+    public boolean samePrice(Tick t) {
+        return new EqualsBuilder()
+                .append(price, t.price)
+                .append(symbol, t.symbol)
+                .append(contract, t.contract)
+                .append(exPrice, t.exPrice)
+                .append(futureType, t.futureType)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price, qty, symbol, contract, localDateTime, exPrice, futureType);
+    }
+
     @Override
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).
@@ -89,9 +116,10 @@ public class Tick {
                 append(symbol).
                 append(contract).
                 append(price).
-                append(qty);
+                append(qty).
+                append(futureType);
         if (!futureType.equals(FutureType.FUTURE)){
-            builder.append(futureType).append(exPrice);
+            builder.append(exPrice);
         }
         return builder.build();
     }

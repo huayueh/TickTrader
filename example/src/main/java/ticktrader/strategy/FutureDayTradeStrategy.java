@@ -16,7 +16,7 @@ import java.time.LocalTime;
 public class FutureDayTradeStrategy extends AbstractStrategy {
     private LocalDate date;
     private String contract;
-    private String symbol = "MTX";
+    private String symbol = "TX";
 
     public FutureDayTradeStrategy(Recorder recorder, ContractProvider contractProvider) {
         super(recorder, contractProvider);
@@ -39,20 +39,10 @@ public class FutureDayTradeStrategy extends AbstractStrategy {
         // right tick for strategy
         LocalTime tickTime = tick.getTime().toLocalTime();
 
-        if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 44, 00)) && positions() == 0) {
-            Order order = new Order.Builder().
-                    symbol(tick.getSymbol()).
-                    contract(tick.getContract()).
-                    side(Order.Side.Sell).
-                    price(tick.getPrice()).
-                    qty(1).
-                    build();
-            placePosition(new Position(order, tick.getTime()));
+        if (tickTime.isAfter(LocalTime.of(8, 45, 00)) && tickTime.isBefore(LocalTime.of(13, 45, 00))) {
+            recorder.record(tick);
         }
 
-        if (tickTime.isAfter(LocalTime.of(13, 44, 00)) && positions() != 0) {
-            settleAllPosition(tick);
-        }
     }
 
 }

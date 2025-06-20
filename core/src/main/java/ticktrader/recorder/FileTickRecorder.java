@@ -18,13 +18,14 @@ public class FileTickRecorder extends AbstractFileRecorder<Tick> {
 
     @Override
     public void record(Tick tick) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(tick.getTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)).append(",");
-        sb.append(tick.getSymbol()).append(",");
-        sb.append(tick.getContract()).append(",");
-        sb.append(tick.getPrice()).append(",");
-        sb.append(tick.getQty());
-        sb.append(System.lineSeparator());
-        write(sb.toString());
+//        StringBuffer sb = new StringBuffer();
+//        sb.append(tick.getTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)).append(",");
+//        sb.append(tick.getSymbol()).append(",");
+//        sb.append(tick.getContract()).append(",");
+//        sb.append(tick.getPrice()).append(",");
+//        sb.append(tick.getQty());
+//        sb.append(System.lineSeparator());
+        write(tick.toString());
+        write(System.lineSeparator());
     }
 }
