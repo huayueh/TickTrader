@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * User: Harvey
  * Date: 2014/1/29
- * Time: 下午 12:14
  */
 public class DaemonTest {
     public static void main(String[] args) {

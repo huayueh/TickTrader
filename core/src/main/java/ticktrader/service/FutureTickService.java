@@ -24,7 +24,6 @@ public class FutureTickService extends AbstractTickService {
         Tick tick = null;
 
         String[] ary = StringUtils.split(line, ",");
-        //交易日期,商品代號,到期月份(週別),成交時間,成交價格,成交數量(B+S),近月價格,遠月價格,開盤集合競價
         String date = ary[0].trim();
         if (ary.length > 5 && NumberUtils.isDigits(date)) {
             String symbol = ary[1].trim();

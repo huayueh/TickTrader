@@ -22,7 +22,7 @@ public class FuturePriceFinderTest {
             URI uriOpen = getClass().getResource("/2012_open_tick.csv").toURI();
             URI uriClose = getClass().getResource("/2012_last_tick.csv").toURI();
             FuturePriceFinder futurePriceFinder = new FuturePriceFinder(Paths.get(uriOpen), Paths.get(uriClose));
-            Optional<Tick> openTick = futurePriceFinder.find(LocalDate.of(2012,7,19), "TX", FuturePriceFinder.Type.OPEN);
+            Optional<Tick> openTick = futurePriceFinder.find(LocalDate.of(2012,7,18), "TX", FuturePriceFinder.Type.OPEN);
             Assert.assertTrue(openTick.isPresent());
         } catch (Exception e){
             Assert.fail("Exception:" + e.getMessage());

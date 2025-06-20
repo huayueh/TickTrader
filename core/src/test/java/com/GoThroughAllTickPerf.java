@@ -11,7 +11,6 @@ import java.io.IOException;
 /**
  * User: Harvey
  * Date: 2014/1/28
- * Time: 下午 3:36
  */
 public class GoThroughAllTickPerf {
     private static final Logger logger = LogManager.getLogger(GoThroughAllTickPerf.class);
