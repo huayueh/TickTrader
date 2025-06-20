@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: ticktrader.provider.SettleContractProviderTest
--------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.708 sec <<< FAILURE! - in ticktrader.provider.SettleContractProviderTest
-testExactlyContractDay(ticktrader.provider.SettleContractProviderTest)  Time elapsed: 0.009 sec  <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "ticktrader.dto.Settle.getContract()" because "settle" is null
-	at ticktrader.provider.SettleContractProvider.exactlyContractDay(SettleContractProvider.java:114)
-	at ticktrader.provider.SettleContractProviderTest.testExactlyContractDay(SettleContractProviderTest.java:116)
