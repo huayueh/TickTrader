@@ -111,6 +111,9 @@ public class SettleContractProvider implements ContractProvider {
 
     public String exactlyContractDay(LocalDate time) {
         Settle settle = his.get(time);
+        if (settle == null) {
+            return null;
+        }
         return settle.getContract();
     }
 }
