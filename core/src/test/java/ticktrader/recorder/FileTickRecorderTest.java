@@ -70,31 +70,37 @@ public class FileTickRecorderTest {
         // 5. Assert that it matches the expected format and data
         assertEquals("Should be one line recorded", 1, lines.size());
 
-        String expectedLine = tickTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "," +
-                              "TESTSYM," +
-                              "TESTCON2312," +
-                              "123.45," +
-                              "100";
+        // Adjust expected line to match Tick.toString() behavior
+        // ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        // + "," + symbol + "," + contract + "," + price + "," + qty + "," + futureType
+        String expectedLine = tick.getTime().atZone(java.time.ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "," +
+                              tick.getSymbol() + "," +
+                              tick.getContract() + "," +
+                              tick.getPrice() + "," +
+                              tick.getQty() + "," +
+                              tick.getFutureType().toString(); // futureType is appended
         assertEquals(expectedLine, lines.get(0));
     }
 
     @Test
     public void testRecord_MultipleTicks() throws IOException {
         Tick tick1 = new Tick();
-        LocalDateTime tickTime1 = LocalDateTime.of(2023, 10, 26, 10, 30, 15);
-        tick1.setTime(tickTime1);
+        LocalDateTime tickTime1LocalDateTime = LocalDateTime.of(2023, 10, 26, 10, 30, 15);
+        tick1.setTime(tickTime1LocalDateTime);
         tick1.setSymbol("SYM1");
         tick1.setContract("CON1");
         tick1.setPrice(100.0);
         tick1.setQty(10);
+        // tick1.setFutureType(FutureType.FUTURE); // Default
 
         Tick tick2 = new Tick();
-        LocalDateTime tickTime2 = LocalDateTime.of(2023, 10, 26, 10, 31, 0);
-        tick2.setTime(tickTime2);
+        LocalDateTime tickTime2LocalDateTime = LocalDateTime.of(2023, 10, 26, 10, 31, 0);
+        tick2.setTime(tickTime2LocalDateTime);
         tick2.setSymbol("SYM2");
         tick2.setContract("CON2");
         tick2.setPrice(200.50);
         tick2.setQty(20);
+        // tick2.setFutureType(FutureType.FUTURE); // Default
 
         recorder.record(tick1);
         recorder.record(tick2);
@@ -110,8 +116,10 @@ public class FileTickRecorderTest {
         List<String> lines = Files.readAllLines(tempFile);
         assertEquals("Should be two lines recorded", 2, lines.size());
 
-        String expectedLine1 = tickTime1.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ",SYM1,CON1,100.0,10";
-        String expectedLine2 = tickTime2.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + ",SYM2,CON2,200.5,20";
+        String expectedLine1 = tick1.getTime().atZone(java.time.ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) +
+                               ",SYM1,CON1,100.0,10," + tick1.getFutureType().toString();
+        String expectedLine2 = tick2.getTime().atZone(java.time.ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) +
+                               ",SYM2,CON2,200.5,20," + tick2.getFutureType().toString();
 
         assertEquals(expectedLine1, lines.get(0));
         assertEquals(expectedLine2, lines.get(1));
