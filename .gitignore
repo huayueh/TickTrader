@@ -1,10 +1,85 @@
-*.iml
+# Compiled class files
 *.class
-UserAction/*
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE Files
+*.iml
+.idea/
+.settings/
+.project
+.classpath
+.factorypath
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
 *.bak
+*.backup
+*.swp
+*.swo
+
+# Application specific
+UserAction/
 *.uml
-logs/*
-.idea/*
-.settings/*
-lib/*
-target/*
+
+# Build tools
+.gradle/
+build/
+out/
+bin/
+
+# Test reports
+**/surefire-reports/
+**/failsafe-reports/
+
+# Coverage reports
+**/target/site/jacoco/
+*.exec
+
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# Runtime dependencies (keep lib/ pattern but be more specific)
+# Note: Consider moving system dependencies to proper Maven repository
+lib/*.jar
+!core/lib/pretty-tools-JDDE-2.0.3.jar
