@@ -1,0 +1,9 @@
+/app/core/src/test/java/ticktrader/service/FuturePriceFinderTest.java
+/app/core/src/test/java/ticktrader/InverseTest.java
+/app/core/src/test/java/ticktrader/recorder/FileTickRecorderTest.java
+/app/core/src/test/java/com/DaemonTest.java
+/app/core/src/test/java/com/GoThroughAllTickPerf.java
+/app/core/src/test/java/ticktrader/recorder/FilePositionRecorderTest.java
+/app/core/src/test/java/ticktrader/FuturePriceFinderTest.java
+/app/core/src/test/java/ticktrader/provider/SettleContractProviderTest.java
+/app/core/src/test/java/ticktrader/recorder/FileReportRecorderTest.java

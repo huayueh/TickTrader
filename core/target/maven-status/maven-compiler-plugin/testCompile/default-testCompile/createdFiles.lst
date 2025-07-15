@@ -1,0 +1,11 @@
+ticktrader/recorder/FileReportRecorderTest.class
+ticktrader/InverseTest.class
+ticktrader/recorder/FilePositionRecorderTest.class
+ticktrader/FuturePriceFinderTest.class
+com/GoThroughAllTickPerf.class
+com/DaemonTest$1.class
+ticktrader/InverseTest$1.class
+ticktrader/provider/SettleContractProviderTest.class
+ticktrader/recorder/FileTickRecorderTest.class
+com/DaemonTest.class
+ticktrader/service/FuturePriceFinderTest.class
